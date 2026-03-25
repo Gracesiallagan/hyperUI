@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Artist;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,16 +12,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-
-        $query = Product::with('artist.organization');
+        $user  = $request->user();
+        $query = Product::with('artist.organization', 'category');
 
         if ($user->role !== 'super_admin') {
             $query->whereHas('artist', fn($q) => $q->where('organization_id', $user->organization_id));
         }
 
         $products = $query->latest()->paginate(15);
-
         return view('admin.products.index', compact('products'));
     }
 
@@ -32,7 +31,7 @@ class ProductController extends Controller
             ? Artist::with('organization')->get()
             : Artist::where('organization_id', $user->organization_id)->get();
 
-        $categories = ['Lukisan', 'Digital Art', 'Kriya', 'Tekstil'];
+        $categories = Category::where('is_active', true)->orderBy('sort_order')->get();
 
         return view('admin.products.create', compact('artists', 'categories'));
     }
@@ -41,7 +40,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
-            'category'    => 'required|in:Lukisan,Digital Art,Kriya,Tekstil',
+            'category_id' => 'required|exists:categories,id',
             'medium'      => 'nullable|string|max:255',
             'price'       => 'required|integer|min:0',
             'description' => 'nullable|string',
@@ -66,7 +65,7 @@ class ProductController extends Controller
             ? Artist::with('organization')->get()
             : Artist::where('organization_id', $user->organization_id)->get();
 
-        $categories = ['Lukisan', 'Digital Art', 'Kriya', 'Tekstil'];
+        $categories = Category::where('is_active', true)->orderBy('sort_order')->get();
 
         return view('admin.products.edit', compact('product', 'artists', 'categories'));
     }
@@ -75,7 +74,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
-            'category'    => 'required|in:Lukisan,Digital Art,Kriya,Tekstil',
+            'category_id' => 'required|exists:categories,id',
             'medium'      => 'nullable|string|max:255',
             'price'       => 'required|integer|min:0',
             'description' => 'nullable|string',
@@ -85,7 +84,7 @@ class ProductController extends Controller
             'image'       => 'nullable|image|max:2048',
         ]);
 
-        $validated['is_sold'] = $request->boolean('is_sold');
+        $validated['is_sold']     = $request->boolean('is_sold');
         $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {

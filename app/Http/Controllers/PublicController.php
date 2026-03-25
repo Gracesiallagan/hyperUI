@@ -3,13 +3,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Organization;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class PublicController extends Controller
 {
     public function index()
     {
-        $featured = Product::with('artist.organization')
+        $featured = Product::with('artist.organization', 'category')
             ->where('is_featured', true)
             ->where('is_sold', false)
             ->take(4)
@@ -29,10 +30,10 @@ class PublicController extends Controller
 
     public function gallery(Request $request)
     {
-        $query = Product::with('artist.organization')->where('is_sold', false);
+        $query = Product::with('artist.organization', 'category')->where('is_sold', false);
 
         if ($request->filled('category') && $request->category !== 'Semua') {
-            $query->where('category', $request->category);
+            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
         }
 
         if ($request->filled('type')) {
@@ -48,7 +49,7 @@ class PublicController extends Controller
         }
 
         $products   = $query->latest()->paginate(12);
-        $categories = ['Semua', 'Lukisan', 'Digital Art', 'Kriya', 'Tekstil'];
+        $categories = Category::where('is_active', true)->orderBy('sort_order')->get();
         $types      = ['Teman Tuli', 'Teman Netra', 'Teman Daksa', 'Teman Autis', 'Teman Grahita'];
 
         return view('public.gallery', compact('products', 'categories', 'types'));
@@ -56,8 +57,9 @@ class PublicController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('artist.organization');
-        $related = Product::where('category', $product->category)
+        $product->load('artist.organization', 'category');
+        $related = Product::with('category')
+            ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->take(4)->get();
 
