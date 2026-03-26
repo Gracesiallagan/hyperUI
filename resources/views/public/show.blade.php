@@ -16,7 +16,7 @@
                 @endif
             </div>
             <div>
-                <span class="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-medium mb-3">{{ $product->category }}</span>
+                <span class="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-medium mb-3">{{ $product->category->name ?? '-' }}</span>
                 @if($product->is_sold)
                     <span class="inline-block px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium mb-3 ml-2">Terjual</span>
                 @endif
@@ -42,8 +42,7 @@
                 </div>
 
                 @unless($product->is_sold)
-                    <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya tertarik dengan karya "' . $product->title . '" di Gandeng Tangan') }}"
-                       target="_blank"
+<a href="https://wa.me/{{ config('app.whatsapp_number', env('WHATSAPP_NUMBER', '6282163850914')) }}?text={{ urlencode(env('WHATSAPP_DEFAULT_TEXT', 'Halo admin GandengTangan, saya ingin pesan karya ini:') . ' ' . $product->title) }}"                       target="_blank"
                        class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full transition"
                        style="background: var(--color-primary)">
                         💬 Hubungi via WhatsApp

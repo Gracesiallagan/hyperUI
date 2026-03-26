@@ -97,14 +97,16 @@ public function gallery(Request $request)
 }
 
     public function show(Product $product)
-    {
-        $product->load('artist.organization');
-        $related = Product::where('category', $product->category)
-            ->where('id', '!=', $product->id)
-            ->take(4)->get();
+{
+    $product->load('artist.organization', 'category');
+    $related = Product::with(['artist.organization', 'category'])
+        ->where('category_id', $product->category_id)
+        ->where('id', '!=', $product->id)
+        ->where('is_sold', false)
+        ->take(4)->get();
 
-        return view('public.show', compact('product', 'related'));
-    }
+    return view('public.show', compact('product', 'related'));
+}
 
     public function about()
     {
