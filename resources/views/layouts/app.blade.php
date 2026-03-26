@@ -10,16 +10,33 @@
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a class="brand" href="/">
+            <a class="brand" href="{{ route('home') }}">
                 <span class="brand-mark">◆</span>
                 <span class="brand-name">GandengTangan</span>
             </a>
 
             <nav class="nav">
-                <a href="#" class="nav-link active">Home</a>
-                <a href="#" class="nav-link">Gallery</a>
-                <a href="#" class="nav-link">Our Artists</a>
-                <a href="#" class="nav-link">About Us</a>
+                <a href="{{ route('home') }}"
+                   class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                    Home
+                </a>
+
+                <a href="{{ route('gallery') }}"
+                   class="nav-link {{ request()->routeIs('gallery') || request()->routeIs('product.show') ? 'active' : '' }}">
+                    Gallery
+                </a>
+
+                {{-- Anda belum punya route "Our Artists" versi public.
+                     Kalau nanti ada, tinggal ganti href ke route tsb. --}}
+                <a href="{{ route('artists') }}"
+                   class="nav-link">
+                    Our Artists
+                </a>
+
+                <a href="{{ route('about') }}"
+                   class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">
+                    About Us
+                </a>
             </nav>
 
             <div class="header-actions">
@@ -29,7 +46,17 @@
                 </div>
 
                 <button class="icon-btn" type="button" aria-label="Cart">🛒</button>
-                <a class="btn btn-dark" href="{{ route('login') }}">Sign In</a>
+
+                @auth
+                    <a class="btn btn-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
+
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                        @csrf
+                        <button class="btn btn-ghost" type="submit">Logout</button>
+                    </form>
+                @else
+                    <a class="btn btn-dark" href="{{ route('login') }}">Sign In</a>
+                @endauth
             </div>
         </div>
     </header>

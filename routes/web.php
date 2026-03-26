@@ -15,6 +15,8 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/galeri', [PublicController::class, 'gallery'])->name('gallery');
 Route::get('/galeri/{product}', [PublicController::class, 'show'])->name('product.show');
 Route::get('/tentang', [PublicController::class, 'about'])->name('about');
+Route::get('/seniman', [PublicController::class, 'artists'])->name('artists');
+Route::get('/seniman/{artist}', [PublicController::class, 'artistShow'])->name('artists.show');
 
 /*
 |--------------------------------------------------------------------------

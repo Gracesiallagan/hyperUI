@@ -1,63 +1,102 @@
 @extends('layouts.app')
-@section('title', 'Galeri — Gandeng Tangan')
+
+@section('title', 'Gallery - GandengTangan')
 
 @section('content')
-{{-- Hero --}}
-<section class="py-16 text-white" style="background: linear-gradient(135deg, #1a1a2e, #16213e)">
-    <div class="max-w-7xl mx-auto px-4">
-        <h1 class="text-3xl md:text-5xl font-bold mb-3">Galeri Karya Digital <span class="text-teal-400">Tanpa Batas</span></h1>
-        <p class="text-gray-400 max-w-lg">Temukan keunikan perspektif dalam setiap goresan tangan teman-teman disabilitas.</p>
+<div class="container page">
+    <div class="gallery-head">
+        <div>
+            <h1 class="page-title">Gallery</h1>
+            <p class="page-subtitle">Temukan karya terbaik dari para seniman disabilitas.</p>
+        </div>
     </div>
-</section>
 
-<section class="py-12">
-    <div class="max-w-7xl mx-auto px-4">
-        {{-- Filters --}}
-        <form method="GET" action="{{ route('gallery') }}" class="mb-8 space-y-4">
-            <div class="flex flex-wrap items-center gap-2">
-                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-2">Kategori:</span>
-                <a href="{{ route('gallery', array_merge(request()->except('page', 'category'), [])) }}"
-                   class="px-4 py-1.5 rounded-full text-sm font-medium transition
-                          {{ !request('category') ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
-                    Semua
-                </a>
+    <form class="gallery-filters" method="GET" action="{{ route('gallery') }}">
+        <div class="filter">
+            <label class="filter-label" for="search">Search</label>
+            <input id="search" class="filter-input" type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul karya / nama seniman...">
+        </div>
+
+        <div class="filter">
+            <label class="filter-label" for="category">Kategori</label>
+            <select id="category" class="filter-input" name="category">
+                <option value="Semua" {{ request('category','Semua') === 'Semua' ? 'selected' : '' }}>Semua</option>
                 @foreach($categories as $cat)
-                    <a href="{{ route('gallery', array_merge(request()->except('page'), ['category' => $cat->slug])) }}"
-                       class="px-4 py-1.5 rounded-full text-sm font-medium transition
-                              {{ request('category') === $cat->slug ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
-                        {{ $cat->icon }} {{ $cat->name }}
-                    </a>
+                    <option value="{{ $cat->slug ?? $cat->name }}"
+                        {{ request('category') === ($cat->slug ?? $cat->name) ? 'selected' : '' }}>
+                        {{ $cat->name }}
+                    </option>
                 @endforeach
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-2">Karya Teman:</span>
-                @foreach($types as $type)
-                    <a href="{{ route('gallery', array_merge(request()->except('page'), ['type' => request('type') === $type ? null : $type])) }}"
-                       class="px-3 py-1 rounded-full text-xs font-medium border transition
-                              {{ request('type') === $type ? 'border-teal-500 text-teal-600 bg-teal-50' : 'border-gray-200 text-gray-400 hover:border-teal-300' }}">
-                        {{ $type }}
-                    </a>
-                @endforeach
-            </div>
-            {{-- Search --}}
-            <div class="flex gap-2 max-w-md">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari karya atau seniman..."
-                       class="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-teal-500 focus:border-teal-500">
-                <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm hover:bg-teal-700">Cari</button>
-            </div>
-        </form>
+            </select>
+        </div>
 
-        {{-- Grid --}}
-        @if($products->count() > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($products as $product)
-                    @include('components.product-card', ['product' => $product])
+        <div class="filter">
+            <label class="filter-label" for="type">Tipe</label>
+            <select id="type" class="filter-input" name="type">
+                <option value="" {{ request('type') ? '' : 'selected' }}>Semua</option>
+                @foreach($types as $t)
+                    <option value="{{ $t }}" {{ request('type') === $t ? 'selected' : '' }}>{{ $t }}</option>
                 @endforeach
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">Terapkan</button>
+            <a class="btn btn-ghost" href="{{ route('gallery') }}">Reset</a>
+        </div>
+    </form>
+
+    <div class="gallery-grid">
+        @forelse($products as $p)
+            @php
+                $waNumber = config('whatsapp.number');
+
+                $message = trim(config('whatsapp.default_text'))."\n"
+                    ."Judul: {$p->title}\n"
+                    ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
+                    ."Seniman: ".($p->artist->name ?? '-')."\n"
+                    ."Link: ".route('product.show', $p);
+
+                $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
+            @endphp
+
+            <div class="card artwork-card">
+                <a class="artwork-media" href="{{ route('product.show', $p) }}">
+                    @if($p->image)
+                        <img src="{{ str_starts_with($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" alt="{{ $p->title }}">
+                    @else
+                        <div class="artwork-placeholder">🖼️</div>
+                    @endif
+                </a>
+
+                <div class="artwork-body">
+                    <div class="artwork-top">
+                        <div class="artwork-title">{{ $p->title }}</div>
+                        <div class="artwork-price">Rp {{ number_format((int)$p->price, 0, ',', '.') }}</div>
+                    </div>
+
+                    <div class="artwork-meta">
+                        <span class="pill">{{ $p->category->name ?? '-' }}</span>
+                        <span class="muted">{{ $p->artist->name ?? '-' }}</span>
+                    </div>
+
+                    <div class="artwork-actions">
+                        <a class="btn btn-ghost" href="{{ route('product.show', $p) }}">Detail</a>
+                        <a class="btn btn-dark" href="{{ $waLink }}" target="_blank" rel="noreferrer">
+                            Beli / Pesan
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="mt-8">{{ $products->withQueryString()->links() }}</div>
-        @else
-            <div class="text-center py-20 text-gray-400">Belum ada karya untuk filter ini.</div>
-        @endif
+        @empty
+            <div class="empty-state">
+                Belum ada karya yang tersedia.
+            </div>
+        @endforelse
     </div>
-</section>
+
+    <div class="pagination-wrap">
+        {{ $products->withQueryString()->links() }}
+    </div>
+</div>
 @endsection

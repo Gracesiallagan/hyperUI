@@ -12,20 +12,16 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Judul Karya</label>
             <input type="text" name="title" value="{{ old('title', $product->title) }}" required
                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-teal-500 focus:border-teal-500">
-            @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                <select name="category_id" required class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                <select name="category" required class="w-full border border-gray-300 rounded-lg px-4 py-2">
                     @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
-                            {{ $cat->icon }} {{ $cat->name }}
-                        </option>
+                        <option value="{{ $cat }}" {{ $product->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
                     @endforeach
                 </select>
-                @error('category_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Media/Teknik</label>
@@ -44,7 +40,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Seniman</label>
                 <select name="artist_id" required class="w-full border border-gray-300 rounded-lg px-4 py-2">
                     @foreach($artists as $artist)
-                        <option value="{{ $artist->id }}" {{ old('artist_id', $product->artist_id) == $artist->id ? 'selected' : '' }}>
+                        <option value="{{ $artist->id }}" {{ $product->artist_id === $artist->id ? 'selected' : '' }}>
                             {{ $artist->name }} {{ $artist->organization ? '(' . $artist->organization->name . ')' : '' }}
                         </option>
                     @endforeach

@@ -9,12 +9,19 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'category_id', 'medium', 'price', 'image',
-        'description', 'is_sold', 'is_featured', 'artist_id',
-    ];
+    'title',
+    'category_id',
+    'medium',
+    'price',
+    'image',
+    'description',
+    'is_sold',
+    'is_featured',
+    'artist_id',
+];
 
     protected $casts = [
-        'is_sold'     => 'boolean',
+        'is_sold' => 'boolean',
         'is_featured' => 'boolean',
     ];
 
@@ -25,7 +32,7 @@ class Product extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(\App\Models\Category::class);
     }
 
     public function getFormattedPriceAttribute(): string

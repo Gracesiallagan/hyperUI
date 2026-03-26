@@ -8,11 +8,12 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'icon', 'description', 'address', 'phone', 'email', 'logo'];
+    protected $fillable = ['name', 'city', 'address', 'phone', 'email', 'icon'];
 
+    // Accessor untuk icon default
     public function getIconAttribute($value)
     {
-        return $value ?? '🏫';
+        return $value ?? '🏫'; // Emoji sekolah default
     }
 
     public function artists()
