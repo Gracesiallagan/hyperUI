@@ -75,8 +75,8 @@
                     <div class="admin-table-row">
                         <div class="admin-prod">
                             <div class="admin-prod-thumb">
-                                @if($p->image)
-                                    <img src="{{ asset('storage/'.$p->image) }}" alt="{{ $p->title }}">
+                                @if($p->image_url)
+                                    <img src="{{ $p->image_url }}" alt="{{ $p->title }}">
                                 @else
                                     IMG
                                 @endif

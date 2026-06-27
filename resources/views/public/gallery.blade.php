@@ -4,6 +4,10 @@
 
 @section('content')
 <div class="container page">
+    @php
+        $waNumber = optional(\App\Models\Setting::query()->first())->whatsapp_number ?: env('WHATSAPP_NUMBER', '6280000000000');
+    @endphp
+
     <div class="gallery-head">
         <div>
             <h1 class="page-title">Catalog</h1>
@@ -49,9 +53,9 @@
     <div class="gallery-grid">
         @forelse($products as $p)
             @php
-                $waNumber = config('whatsapp.number');
+                $defaultText = config('whatsapp.default_text', 'Halo admin GandengTangan, saya tertarik dengan produk ini.');
 
-                $message = trim(config('whatsapp.default_text'))."\n"
+                $message = trim($defaultText)."\n"
                     ."Judul: {$p->title}\n"
                     ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
                     ."Pengrajin: ".($p->artist->name ?? '-')."\n"
@@ -62,8 +66,8 @@
 
             <div class="card artwork-card">
                 <a class="artwork-media" href="{{ route('product.show', $p) }}">
-                    @if($p->image)
-                        <img src="{{ str_starts_with($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" alt="{{ $p->title }}">
+                    @if($p->image_url)
+                        <img src="{{ $p->image_url }}" alt="{{ $p->title }}">
                     @else
                         <div class="artwork-placeholder">IMG</div>
                     @endif

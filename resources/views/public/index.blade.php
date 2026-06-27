@@ -28,9 +28,9 @@
                     <div class="hero-carousel-track" id="heroCarouselTrack">
                         @forelse($featured as $p)
                             <a class="hero-slide" href="{{ route('product.show', $p) }}">
-                                @if($p->image)
+                                @if($p->image_url)
                                     <img
-                                        src="{{ str_starts_with($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}"
+                                        src="{{ $p->image_url }}"
                                         alt="{{ $p->title }}"
                                         loading="lazy"
                                     >
@@ -120,8 +120,8 @@
                     @foreach($items as $p)
                         <a class="card home-product" href="{{ route('product.show', $p) }}">
                             <div class="home-product-media">
-                                @if($p->image)
-                                    <img src="{{ str_starts_with($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" alt="{{ $p->title }}" loading="lazy">
+                                @if($p->image_url)
+                                    <img src="{{ $p->image_url }}" alt="{{ $p->title }}" loading="lazy">
                                 @else
                                     <div class="home-product-fallback">IMG</div>
                                 @endif

@@ -1,82 +1,138 @@
 @extends('layouts.admin')
 @section('title', 'Edit Produk')
+@section('page_title', 'Edit Produk')
+@section('page_subtitle', 'Perbarui informasi produk dan nomor WhatsApp admin')
 
 @section('content')
-<h1 class="text-2xl font-bold mb-6">Edit Produk</h1>
-
-<form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm p-8 max-w-2xl">
-    @csrf @method('PUT')
-
-    <div class="space-y-5">
+    <div class="admin-page-actions">
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Judul Karya</label>
-            <input type="text" name="title" value="{{ old('title', $product->title) }}" required
-                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-teal-500 focus:border-teal-500">
+            <h1 class="admin-h1">Edit Produk</h1>
+            <p class="admin-p">Perbaiki detail produk, status tampil, gambar, dan nomor WhatsApp admin.</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                <select name="category" required class="w-full border border-gray-300 rounded-lg px-4 py-2">
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat }}" {{ $product->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Media/Teknik</label>
-                <input type="text" name="medium" value="{{ old('medium', $product->medium) }}"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2">
-            </div>
-        </div>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-ghost">
+            &larr; Kembali
+        </a>
+    </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label>
-                <input type="number" name="price" value="{{ old('price', $product->price) }}" required min="0"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Seniman</label>
-                <select name="artist_id" required class="w-full border border-gray-300 rounded-lg px-4 py-2">
-                    @foreach($artists as $artist)
-                        <option value="{{ $artist->id }}" {{ $product->artist_id === $artist->id ? 'selected' : '' }}>
-                            {{ $artist->name }} {{ $artist->organization ? '(' . $artist->organization->name . ')' : '' }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
+    <div class="admin-form-wrap">
+        <form method="POST"
+              action="{{ route('admin.products.update', $product) }}"
+              enctype="multipart/form-data"
+              class="admin-form-card">
+            @csrf
+            @method('PUT')
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-            <textarea name="description" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2">{{ old('description', $product->description) }}</textarea>
-        </div>
-
-        <div class="flex gap-6">
-            <label class="flex items-center gap-2">
-                <input type="checkbox" name="is_sold" value="1" {{ $product->is_sold ? 'checked' : '' }} class="rounded text-teal-600">
-                <span class="text-sm">Terjual</span>
-            </label>
-            <label class="flex items-center gap-2">
-                <input type="checkbox" name="is_featured" value="1" {{ $product->is_featured ? 'checked' : '' }} class="rounded text-teal-600">
-                <span class="text-sm">Tampilkan di Beranda</span>
-            </label>
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Ganti Gambar</label>
-            @if($product->image)
-                <img src="{{ str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
-                     class="w-24 h-24 rounded-lg object-cover mb-2" alt="">
+            @if ($errors->any())
+                <div class="alert alert-danger" style="margin-bottom:12px;">
+                    <div class="alert-title">Periksa kembali input Anda:</div>
+                    <ul class="alert-list">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
-            <input type="file" name="image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-teal-50 file:text-teal-700">
-        </div>
 
-        <div class="flex gap-3 pt-4">
-            <button type="submit" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium">Perbarui</button>
-            <a href="{{ route('admin.products.index') }}" class="px-6 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">Batal</a>
+            <div class="admin-form-grid">
+                <div class="field">
+                    <label class="label" for="title">Judul Produk</label>
+                    <input id="title" type="text" name="title" value="{{ old('title', $product->title) }}" required class="input">
+                    @error('title') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
+                    <label class="label" for="artist_id">Pengrajin</label>
+                    <select id="artist_id" name="artist_id" required class="input">
+                        @foreach($artists as $artist)
+                            <option value="{{ $artist->id }}" {{ (string) old('artist_id', $product->artist_id) === (string) $artist->id ? 'selected' : '' }}>
+                                {{ $artist->name }}{{ $artist->organization ? ' (' . $artist->organization->name . ')' : '' }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('artist_id') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
+                    <label class="label" for="category_id">Kategori</label>
+                    <select id="category_id" name="category_id" required class="input">
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ (string) old('category_id', $product->category_id) === (string) $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
+                    <label class="label" for="medium">Media / Teknik</label>
+                    <input id="medium" type="text" name="medium" value="{{ old('medium', $product->medium) }}" class="input">
+                    @error('medium') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
+                    <label class="label" for="price">Harga (Rp)</label>
+                    <input id="price" type="number" name="price" value="{{ old('price', $product->price) }}" required min="0" class="input">
+                    @error('price') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
+                    <label class="label" for="whatsapp_number">Nomor WhatsApp Admin</label>
+                    <input id="whatsapp_number" type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '') }}" class="input" placeholder="Contoh: 6281234567890">
+                    @error('whatsapp_number') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field span-2">
+                    <label class="label" for="description">Deskripsi</label>
+                    <textarea id="description" name="description" rows="4" class="textarea">{{ old('description', $product->description) }}</textarea>
+                    @error('description') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field span-2">
+                    <label class="label" for="image">Gambar Produk</label>
+
+                    @if($product->image_url)
+                        <div style="margin-bottom: 12px;">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->title }}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 16px; border: 1px solid #d6d3d1;">
+                        </div>
+                    @endif
+
+                    <div class="filebox">
+                        <input id="image" type="file" name="image" accept="image/*" class="fileinput">
+                        <div class="filehint">Format: JPG/PNG • Maks: 2MB</div>
+                    </div>
+                    @error('image') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field span-2">
+                    <div style="display:flex; gap: 18px; flex-wrap: wrap;">
+                        <label class="check">
+                            <input type="checkbox" name="is_sold" value="1" {{ old('is_sold', $product->is_sold) ? 'checked' : '' }}>
+                            <span>Tandai terjual</span>
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
+                            <span>Tampilkan di beranda</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <a href="{{ route('admin.products.index') }}" class="btn btn-ghost">Batal</a>
+            </div>
+        </form>
+
+        <div class="admin-help-card">
+            <div class="help-title">Catatan</div>
+            <ul class="help-list">
+                <li>Nomor WhatsApp yang diisi di sini disimpan ke database sebagai nomor admin aktif.</li>
+                <li>Jika gambar lama tidak muncul, upload ulang gambar baru untuk produk ini.</li>
+                <li>Status terjual masih memakai mekanisme legacy `is_sold` sampai fase stok final dikerjakan.</li>
+            </ul>
         </div>
     </div>
-</form>
 @endsection

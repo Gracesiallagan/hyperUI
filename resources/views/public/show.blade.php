@@ -8,8 +8,8 @@
 
         <div class="grid md:grid-cols-2 gap-12">
             <div class="rounded-2xl overflow-hidden bg-gray-100">
-                @if($product->image)
-                    <img src="{{ str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
+                @if($product->image_url)
+                    <img src="{{ $product->image_url }}"
                          alt="{{ $product->title }}" class="w-full h-auto object-cover">
                 @else
                     <div class="aspect-square flex items-center justify-center text-gray-300">No Image</div>
@@ -40,14 +40,19 @@
                     </div>
                 </div>
 
-                @unless($product->is_sold)
-                    <a href="https://wa.me/{{ config('app.whatsapp_number', env('WHATSAPP_NUMBER', '6282163850914')) }}?text={{ urlencode(env('WHATSAPP_DEFAULT_TEXT', 'Halo admin GandengTangan, saya ingin pesan karya ini:') . ' ' . $product->title) }}"
-                       target="_blank"
-                       class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full transition"
-                       style="background: var(--color-primary)">
-                        Hubungi via WhatsApp
-                    </a>
-                @endunless
+                @php
+                    $waNumber = optional(\App\Models\Setting::query()->first())->whatsapp_number ?: env('WHATSAPP_NUMBER', '6280000000000');
+                    $waMessage = $product->is_sold
+                        ? "Halo admin GandengTangan, saya ingin tanya ketersediaan produk {$product->title} dari {$product->artist->name}."
+                        : "Halo admin GandengTangan, saya tertarik dengan produk {$product->title} dari {$product->artist->name} dengan harga {$product->formatted_price}.";
+                @endphp
+
+                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode($waMessage) }}"
+                   target="_blank"
+                   class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full transition"
+                   style="background: var(--color-primary)">
+                    {{ $product->is_sold ? 'Tanya Ketersediaan' : 'Hubungi via WhatsApp' }}
+                </a>
             </div>
         </div>
 

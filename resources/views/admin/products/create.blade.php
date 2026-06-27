@@ -78,6 +78,12 @@
                     @error('price') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
 
+                <div class="field">
+                    <label class="label" for="whatsapp_number">Nomor WhatsApp Admin</label>
+                    <input id="whatsapp_number" type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '') }}" class="input" placeholder="Contoh: 6281234567890">
+                    @error('whatsapp_number') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
                 <div class="field span-2">
                     <label class="label" for="description">Deskripsi</label>
                     <textarea id="description" name="description" rows="4" class="textarea"
@@ -110,6 +116,7 @@
             <ul class="help-list">
                 <li>Gunakan judul singkat dan mudah dicari.</li>
                 <li>Harga disarankan tanpa titik/koma (contoh: 500000).</li>
+                <li>Nomor WhatsApp admin disimpan ke database dan dipakai di halaman publik.</li>
                 <li>Jika gambar belum siap, Anda bisa upload nanti lewat Edit.</li>
             </ul>
         </div>

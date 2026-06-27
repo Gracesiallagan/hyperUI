@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Artist;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,8 +26,9 @@ class ProductController extends Controller
         $artists = Artist::query()->get();
 
         $categories = Category::orderBy('sort_order')->orderBy('name')->get();
+        $settings = Setting::query()->first();
 
-        return view('admin.products.create', compact('artists', 'categories'));
+        return view('admin.products.create', compact('artists', 'categories', 'settings'));
     }
 
     public function store(Request $request)
@@ -39,11 +41,15 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'artist_id'   => 'required|exists:artists,id',
             'image'       => 'nullable|image|max:2048',
+            'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
+
+        $this->saveWhatsappNumber($validated['whatsapp_number'] ?? null);
+        unset($validated['whatsapp_number']);
 
         Product::create($validated);
 
@@ -55,8 +61,9 @@ class ProductController extends Controller
         $artists = Artist::query()->get();
 
         $categories = Category::orderBy('sort_order')->orderBy('name')->get();
+        $settings = Setting::query()->first();
 
-        return view('admin.products.edit', compact('product', 'artists', 'categories'));
+        return view('admin.products.edit', compact('product', 'artists', 'categories', 'settings'));
     }
 
     public function update(Request $request, Product $product)
@@ -71,6 +78,7 @@ class ProductController extends Controller
             'is_sold'     => 'boolean',
             'is_featured' => 'boolean',
             'image'       => 'nullable|image|max:2048',
+            'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
         $validated['is_sold'] = $request->boolean('is_sold');
@@ -80,6 +88,9 @@ class ProductController extends Controller
             if ($product->image) Storage::disk('public')->delete($product->image);
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
+
+        $this->saveWhatsappNumber($validated['whatsapp_number'] ?? null);
+        unset($validated['whatsapp_number']);
 
         $product->update($validated);
 
@@ -92,5 +103,17 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus!');
+    }
+
+    private function saveWhatsappNumber(?string $number): void
+    {
+        if (!$number) {
+            return;
+        }
+
+        Setting::query()->updateOrCreate(
+            ['id' => 1],
+            ['whatsapp_number' => $number]
+        );
     }
 }

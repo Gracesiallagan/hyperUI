@@ -6,6 +6,7 @@ use App\Models\Artist;
 use App\Models\Category;
 use App\Models\Organization;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -107,6 +108,14 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'organization_id' => null,
+            ]
+        );
+
+        Setting::query()->updateOrCreate(
+            ['id' => 1],
+            [
+                'whatsapp_number' => env('WHATSAPP_NUMBER', '6280000000000'),
+                'site_name' => 'GandengTangan',
             ]
         );
     }

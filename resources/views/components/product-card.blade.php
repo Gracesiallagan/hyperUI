@@ -1,8 +1,8 @@
 <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
     <a href="{{ route('product.show', $product) }}">
         <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
-            @if($product->image)
-                <img src="{{ str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
+            @if($product->image_url)
+                <img src="{{ $product->image_url }}"
                      alt="{{ $product->title }}"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                      loading="lazy">
@@ -13,7 +13,7 @@
                 <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">Terjual</div>
             @endif
             <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs px-2 py-1 rounded-full font-medium text-gray-700">
-                {{ $product->category }}
+                {{ $product->category->name ?? '-' }}
             </div>
         </div>
         <div class="p-4">

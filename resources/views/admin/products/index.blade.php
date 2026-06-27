@@ -37,9 +37,9 @@
                 <div class="admin-table-row admin-table-row-6">
                     <div class="admin-prod">
                         <div class="admin-prod-thumb">
-                            @if($product->image)
+                            @if($product->image_url)
                                 <img
-                                    src="{{ str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
+                                    src="{{ $product->image_url }}"
                                     alt="{{ $product->title }}"
                                 >
                             @else
