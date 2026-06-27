@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artist;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,13 +11,7 @@ class ArtistController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-
         $query = Artist::with('organization')->withCount('products');
-
-        if ($user->role !== 'super_admin') {
-            $query->where('organization_id', $user->organization_id);
-        }
 
         $artists = $query->latest()->paginate(15);
 
@@ -38,7 +33,7 @@ class ArtistController extends Controller
             'photo'           => 'nullable|image|max:2048',
         ]);
 
-        $validated['organization_id'] = $request->user()->organization_id;
+        $validated['organization_id'] = Organization::query()->value('id');
         $validated['avatar'] = strtoupper(substr($validated['name'], 0, 1));
 
         if ($request->hasFile('photo')) {

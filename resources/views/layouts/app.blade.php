@@ -11,7 +11,7 @@
     <header class="site-header">
         <div class="container header-inner">
             <a class="brand" href="{{ route('home') }}">
-                <span class="brand-mark">◆</span>
+                <span class="brand-mark">GT</span>
                 <span class="brand-name">GandengTangan</span>
             </a>
 
@@ -21,32 +21,28 @@
                     Home
                 </a>
 
-                <a href="{{ route('gallery') }}"
-                   class="nav-link {{ request()->routeIs('gallery') || request()->routeIs('product.show') ? 'active' : '' }}">
-                    Gallery
-                </a>
-
-                {{-- Anda belum punya route "Our Artists" versi public.
-                     Kalau nanti ada, tinggal ganti href ke route tsb. --}}
-                <a href="{{ route('artists') }}"
-                   class="nav-link">
-                    Our Artists
+                <a href="{{ route('catalog') }}"
+                   class="nav-link {{ request()->routeIs('catalog') || request()->routeIs('product.show') ? 'active' : '' }}">
+                    Catalog
                 </a>
 
                 <a href="{{ route('about') }}"
                    class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">
-                    About Us
+                    About
+                </a>
+
+                <a href="{{ route('contact') }}"
+                   class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+                    Contact
+                </a>
+
+                <a href="{{ route('how_to_buy') }}"
+                   class="nav-link {{ request()->routeIs('how_to_buy') ? 'active' : '' }}">
+                    How to Buy
                 </a>
             </nav>
 
             <div class="header-actions">
-                <div class="search">
-                    <span class="search-icon">🔎</span>
-                    <input class="search-input" type="text" placeholder="Search artworks...">
-                </div>
-
-                <button class="icon-btn" type="button" aria-label="Cart">🛒</button>
-
                 @auth
                     <a class="btn btn-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
 
@@ -55,7 +51,7 @@
                         <button class="btn btn-ghost" type="submit">Logout</button>
                     </form>
                 @else
-                    <a class="btn btn-dark" href="{{ route('login') }}">Sign In</a>
+                    <a class="btn btn-dark" href="{{ route('login') }}">Admin Login</a>
                 @endauth
             </div>
         </div>
@@ -68,7 +64,7 @@
     <footer class="site-footer">
         <div class="container footer-inner">
             <div class="footer-brand">GandengTangan</div>
-            <div class="footer-copy">© {{ date('Y') }} GandengTangan. All rights reserved.</div>
+            <div class="footer-copy">&copy; {{ date('Y') }} GandengTangan. All rights reserved.</div>
         </div>
     </footer>
 </body>

@@ -11,7 +11,7 @@
 <div class="admin-shell">
     <aside class="admin-sidebar">
         <div class="admin-brand">
-            <span class="admin-mark">◆</span>
+            <span class="admin-mark">GT</span>
             <div>
                 <div class="admin-name">GandengTangan</div>
                 <div class="admin-sub">Admin Panel</div>
@@ -26,11 +26,10 @@
                href="{{ route('admin.products.index') }}">Products</a>
 
             <a class="admin-link {{ request()->routeIs('admin.artists.*') ? 'active' : '' }}"
-               href="{{ route('admin.artists.index') }}">Artists</a>
+               href="{{ route('admin.artists.index') }}">Pengrajin</a>
 
-            {{-- Tambahkan nanti kalau sudah ada CRUD --}}
             <a class="admin-link" href="#" aria-disabled="true">Categories</a>
-            <a class="admin-link" href="#" aria-disabled="true">Organizations</a>
+            <a class="admin-link" href="#" aria-disabled="true">Settings</a>
         </nav>
 
         <div class="admin-sidefoot">
@@ -58,7 +57,7 @@
 
             <div class="admin-top-right">
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank" rel="noreferrer">
-                    Lihat Website →
+                    Lihat Website
                 </a>
             </div>
         </header>

@@ -1,26 +1,26 @@
 @extends('layouts.app')
 
-@section('title', 'Gallery - GandengTangan')
+@section('title', 'Catalog - GandengTangan')
 
 @section('content')
 <div class="container page">
     <div class="gallery-head">
         <div>
-            <h1 class="page-title">Gallery</h1>
-            <p class="page-subtitle">Temukan karya terbaik dari para seniman disabilitas.</p>
+            <h1 class="page-title">Catalog</h1>
+            <p class="page-subtitle">Temukan produk pilihan dari para pengrajin disabilitas.</p>
         </div>
     </div>
 
-    <form class="gallery-filters" method="GET" action="{{ route('gallery') }}">
+    <form class="gallery-filters" method="GET" action="{{ route('catalog') }}">
         <div class="filter">
             <label class="filter-label" for="search">Search</label>
-            <input id="search" class="filter-input" type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul karya / nama seniman...">
+            <input id="search" class="filter-input" type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk / pengrajin...">
         </div>
 
         <div class="filter">
             <label class="filter-label" for="category">Kategori</label>
             <select id="category" class="filter-input" name="category">
-                <option value="Semua" {{ request('category','Semua') === 'Semua' ? 'selected' : '' }}>Semua</option>
+                <option value="Semua" {{ request('category', 'Semua') === 'Semua' ? 'selected' : '' }}>Semua</option>
                 @foreach($categories as $cat)
                     <option value="{{ $cat->slug ?? $cat->name }}"
                         {{ request('category') === ($cat->slug ?? $cat->name) ? 'selected' : '' }}>
@@ -42,7 +42,7 @@
 
         <div class="filter-actions">
             <button class="btn btn-primary" type="submit">Terapkan</button>
-            <a class="btn btn-ghost" href="{{ route('gallery') }}">Reset</a>
+            <a class="btn btn-ghost" href="{{ route('catalog') }}">Reset</a>
         </div>
     </form>
 
@@ -54,7 +54,7 @@
                 $message = trim(config('whatsapp.default_text'))."\n"
                     ."Judul: {$p->title}\n"
                     ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
-                    ."Seniman: ".($p->artist->name ?? '-')."\n"
+                    ."Pengrajin: ".($p->artist->name ?? '-')."\n"
                     ."Link: ".route('product.show', $p);
 
                 $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
@@ -65,7 +65,7 @@
                     @if($p->image)
                         <img src="{{ str_starts_with($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" alt="{{ $p->title }}">
                     @else
-                        <div class="artwork-placeholder">🖼️</div>
+                        <div class="artwork-placeholder">IMG</div>
                     @endif
                 </a>
 
@@ -90,7 +90,7 @@
             </div>
         @empty
             <div class="empty-state">
-                Belum ada karya yang tersedia.
+                Belum ada produk yang tersedia.
             </div>
         @endforelse
     </div>

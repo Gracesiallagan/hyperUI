@@ -13,13 +13,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-
-        $query = Product::with(['category', 'artist.organization']);
-
-        if ($user->role !== 'super_admin') {
-            $query->whereHas('artist', fn($q) => $q->where('organization_id', $user->organization_id));
-        }
+        $query = Product::with(['category', 'artist']);
 
         $products = $query->latest()->paginate(15);
 
@@ -28,11 +22,7 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
-        $user = $request->user();
-
-        $artists = $user->role === 'super_admin'
-            ? Artist::with('organization')->get()
-            : Artist::where('organization_id', $user->organization_id)->get();
+        $artists = Artist::query()->get();
 
         $categories = Category::orderBy('sort_order')->orderBy('name')->get();
 
@@ -62,11 +52,7 @@ class ProductController extends Controller
 
     public function edit(Product $product, Request $request)
     {
-        $user = $request->user();
-
-        $artists = $user->role === 'super_admin'
-            ? Artist::with('organization')->get()
-            : Artist::where('organization_id', $user->organization_id)->get();
+        $artists = Artist::query()->get();
 
         $categories = Category::orderBy('sort_order')->orderBy('name')->get();
 

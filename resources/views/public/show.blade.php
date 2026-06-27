@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', $product->title . ' — Gandeng Tangan')
+@section('title', $product->title . ' - GandengTangan')
 
 @section('content')
 <section class="py-12">
     <div class="max-w-7xl mx-auto px-4">
-        <a href="{{ route('gallery') }}" class="text-teal-600 text-sm mb-6 inline-block">&larr; Kembali ke Galeri</a>
+        <a href="{{ route('catalog') }}" class="text-teal-600 text-sm mb-6 inline-block">&larr; Kembali ke Katalog</a>
 
         <div class="grid md:grid-cols-2 gap-12">
             <div class="rounded-2xl overflow-hidden bg-gray-100">
@@ -28,7 +28,6 @@
                     <p class="text-gray-600 mb-6">{{ $product->description }}</p>
                 @endif
 
-                {{-- Artist Info --}}
                 <div class="bg-gray-50 rounded-xl p-4 mb-6">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
@@ -36,25 +35,25 @@
                         </div>
                         <div>
                             <div class="font-semibold">{{ $product->artist->name }}</div>
-                            <div class="text-xs text-gray-400">{{ $product->artist->disability_type }} · {{ $product->artist->organization->name }}</div>
+                            <div class="text-xs text-gray-400">{{ $product->artist->disability_type }}</div>
                         </div>
                     </div>
                 </div>
 
                 @unless($product->is_sold)
-<a href="https://wa.me/{{ config('app.whatsapp_number', env('WHATSAPP_NUMBER', '6282163850914')) }}?text={{ urlencode(env('WHATSAPP_DEFAULT_TEXT', 'Halo admin GandengTangan, saya ingin pesan karya ini:') . ' ' . $product->title) }}"                       target="_blank"
+                    <a href="https://wa.me/{{ config('app.whatsapp_number', env('WHATSAPP_NUMBER', '6282163850914')) }}?text={{ urlencode(env('WHATSAPP_DEFAULT_TEXT', 'Halo admin GandengTangan, saya ingin pesan karya ini:') . ' ' . $product->title) }}"
+                       target="_blank"
                        class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full transition"
                        style="background: var(--color-primary)">
-                        💬 Hubungi via WhatsApp
+                        Hubungi via WhatsApp
                     </a>
                 @endunless
             </div>
         </div>
 
-        {{-- Related Products --}}
         @if($related->count() > 0)
             <div class="mt-16">
-                <h2 class="text-xl font-bold mb-6">Karya Serupa</h2>
+                <h2 class="text-xl font-bold mb-6">Produk Serupa</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($related as $p)
                         @include('components.product-card', ['product' => $p])

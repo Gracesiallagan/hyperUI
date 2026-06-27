@@ -2,46 +2,88 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Organization;
 use App\Models\Artist;
+use App\Models\Category;
+use App\Models\Organization;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\Category;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Organizations
+        // Legacy compatibility: keep demo data idempotent while schema is still old.
         $orgs = [
-            Organization::create(['name' => 'SLB Pembina', 'icon' => '🏫', 'description' => 'Sekolah Luar Biasa Pembina']),
-            Organization::create(['name' => 'Yayasan Kasih', 'icon' => '🤝', 'description' => 'Yayasan Kasih untuk Disabilitas']),
-            Organization::create(['name' => 'Komunitas Seni', 'icon' => '🎨', 'description' => 'Komunitas Seni Inklusif']),
-            Organization::create(['name' => 'SLB Dharma', 'icon' => '📚', 'description' => 'Sekolah Luar Biasa Dharma']),
-            Organization::create(['name' => 'Sanggar Lukis', 'icon' => '🖌️', 'description' => 'Sanggar Lukis Pelangi']),
+            Organization::firstOrCreate(
+                ['name' => 'SLB Pembina'],
+                ['icon' => '🏫', 'description' => 'Sekolah Luar Biasa Pembina']
+            ),
+            Organization::firstOrCreate(
+                ['name' => 'Yayasan Kasih'],
+                ['icon' => '🤝', 'description' => 'Yayasan Kasih untuk Disabilitas']
+            ),
+            Organization::firstOrCreate(
+                ['name' => 'Komunitas Seni'],
+                ['icon' => '🎨', 'description' => 'Komunitas Seni Inklusif']
+            ),
+            Organization::firstOrCreate(
+                ['name' => 'SLB Dharma'],
+                ['icon' => '📚', 'description' => 'Sekolah Luar Biasa Dharma']
+            ),
+            Organization::firstOrCreate(
+                ['name' => 'Sanggar Lukis'],
+                ['icon' => '🖌️', 'description' => 'Sanggar Lukis Pelangi']
+            ),
         ];
 
-        // Categories (baru)
         $categories = [
-            'Lukisan'     => Category::create(['name' => 'Lukisan', 'slug' => 'lukisan', 'icon' => '🖌️']),
-            'Digital Art' => Category::create(['name' => 'Digital Art', 'slug' => 'digital-art', 'icon' => '💻']),
-            'Kriya'       => Category::create(['name' => 'Kriya', 'slug' => 'kriya', 'icon' => '🏺']),
-            'Tekstil'     => Category::create(['name' => 'Tekstil', 'slug' => 'tekstil', 'icon' => '🧵']),
+            'Lukisan' => Category::updateOrCreate(
+                ['slug' => 'lukisan'],
+                ['name' => 'Lukisan', 'icon' => '🖌️']
+            ),
+            'Digital Art' => Category::updateOrCreate(
+                ['slug' => 'digital-art'],
+                ['name' => 'Digital Art', 'icon' => '💻']
+            ),
+            'Kriya' => Category::updateOrCreate(
+                ['slug' => 'kriya'],
+                ['name' => 'Kriya', 'icon' => '🏺']
+            ),
+            'Tekstil' => Category::updateOrCreate(
+                ['slug' => 'tekstil'],
+                ['name' => 'Tekstil', 'icon' => '🧵']
+            ),
         ];
 
-        // Artists
         $artists = [
-            Artist::create(['name' => 'Risky', 'avatar' => 'R', 'disability_type' => 'Teman Tuli', 'organization_id' => $orgs[0]->id]),
-            Artist::create(['name' => 'Siti', 'avatar' => 'S', 'disability_type' => 'Teman Netra', 'organization_id' => $orgs[1]->id]),
-            Artist::create(['name' => 'Budi', 'avatar' => 'B', 'disability_type' => 'Teman Autis', 'organization_id' => $orgs[2]->id]),
-            Artist::create(['name' => 'Yudi', 'avatar' => 'Y', 'disability_type' => 'Teman Grahita', 'organization_id' => $orgs[3]->id]),
-            Artist::create(['name' => 'Adi', 'avatar' => 'A', 'disability_type' => 'Teman Daksa', 'organization_id' => $orgs[4]->id]),
-            Artist::create(['name' => 'Raka', 'avatar' => 'R', 'disability_type' => 'Teman Tuli', 'organization_id' => $orgs[0]->id]),
+            Artist::firstOrCreate(
+                ['name' => 'Risky', 'organization_id' => $orgs[0]->id],
+                ['avatar' => 'R', 'disability_type' => 'Teman Tuli']
+            ),
+            Artist::firstOrCreate(
+                ['name' => 'Siti', 'organization_id' => $orgs[1]->id],
+                ['avatar' => 'S', 'disability_type' => 'Teman Netra']
+            ),
+            Artist::firstOrCreate(
+                ['name' => 'Budi', 'organization_id' => $orgs[2]->id],
+                ['avatar' => 'B', 'disability_type' => 'Teman Autis']
+            ),
+            Artist::firstOrCreate(
+                ['name' => 'Yudi', 'organization_id' => $orgs[3]->id],
+                ['avatar' => 'Y', 'disability_type' => 'Teman Grahita']
+            ),
+            Artist::firstOrCreate(
+                ['name' => 'Adi', 'organization_id' => $orgs[4]->id],
+                ['avatar' => 'A', 'disability_type' => 'Teman Daksa']
+            ),
+            Artist::firstOrCreate(
+                ['name' => 'Raka', 'organization_id' => $orgs[0]->id],
+                ['avatar' => 'R', 'disability_type' => 'Teman Tuli']
+            ),
         ];
 
-        // Products (pakai category_id, bukan category string)
         $products = [
             ['title' => 'Senja di Jakarta', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Akrilik di Kanvas', 'price' => 500000, 'artist_id' => $artists[0]->id, 'is_featured' => true],
             ['title' => 'Samudra Mimpi', 'category_id' => $categories['Digital Art']->id, 'medium' => 'High-Res Print', 'price' => 350000, 'artist_id' => $artists[1]->id, 'is_featured' => true],
@@ -51,26 +93,21 @@ class DatabaseSeeder extends Seeder
             ['title' => 'Mimpi Berwarna', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Cat Air di Kanvas', 'price' => 400000, 'artist_id' => $artists[5]->id, 'is_sold' => true],
         ];
 
-        foreach ($products as $p) {
-            Product::create($p);
+        foreach ($products as $product) {
+            Product::firstOrCreate(
+                ['title' => $product['title'], 'artist_id' => $product['artist_id']],
+                $product
+            );
         }
 
-        // Admin users
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'admin@gandengtangan.id',
-            'password' => Hash::make('password'),
-            // NOTE: pastikan kolom 'role' dan 'organization_id' memang ada di tabel users
-            'role' => 'super_admin',
-            'organization_id' => null,
-        ]);
-
-        User::create([
-            'name' => 'Admin SLB Pembina',
-            'email' => 'pembina@gandengtangan.id',
-            'password' => Hash::make('password'),
-            'role' => 'org_admin',
-            'organization_id' => $orgs[0]->id,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@gandengtangan.id'],
+            [
+                'name' => 'Admin GandengTangan',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'organization_id' => null,
+            ]
+        );
     }
 }
