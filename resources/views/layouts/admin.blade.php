@@ -32,7 +32,7 @@
                href="{{ route('admin.categories.index') }}">Kategori</a>
 
             <a class="admin-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
-               href="{{ route('admin.settings.edit') }}">Settings</a>
+               href="{{ route('admin.settings.edit') }}">Pengaturan</a>
         </nav>
 
         <div class="admin-sidefoot">
@@ -54,8 +54,9 @@
     <div class="admin-main">
         <header class="admin-topbar">
             <div class="admin-top-left">
-                <div class="admin-page-title">@yield('page_title', 'Dashboard')</div>
-                <div class="admin-page-sub">@yield('page_subtitle', 'Ringkasan data terbaru')</div>
+                <div class="admin-eyebrow">Admin Panel</div>
+                <div class="admin-page-title">@yield('page_title', 'Dashboard Admin')</div>
+                <div class="admin-page-sub">@yield('page_subtitle', 'Kelola data GandengTangan dengan mudah.')</div>
             </div>
 
             <div class="admin-top-right">
@@ -66,10 +67,6 @@
         </header>
 
         <main class="admin-content">
-            @if (session('success'))
-                <div class="alert alert-success" style="margin-bottom:12px;">{{ session('success') }}</div>
-            @endif
-
             @yield('content')
         </main>
     </div>

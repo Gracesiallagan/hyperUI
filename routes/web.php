@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ArtistController;
@@ -19,6 +20,10 @@ Route::view('/kontak', 'public.contact')->name('contact');
 Route::view('/cara-beli', 'public.how-to-buy')->name('how_to_buy');
 Route::redirect('/cara-membeli', '/cara-beli');
 Route::get('/katalog', [PublicController::class, 'gallery'])->name('catalog');
+Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
+Route::post('/keranjang/{product}', [CartController::class, 'store'])->name('cart.store');
+Route::delete('/keranjang/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::delete('/keranjang', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('/katalog/{product}', [PublicController::class, 'show'])->name('product.show');
 Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

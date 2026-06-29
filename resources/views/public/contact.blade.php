@@ -12,8 +12,8 @@
 <div class="container page">
     <div class="gallery-head">
         <div>
-            <h1 class="page-title">Kontak</h1>
-            <p class="page-subtitle">Hubungi admin GandengTangan untuk pertanyaan produk, kolaborasi, atau informasi pembelian.</p>
+            <h1 class="page-title">Hubungi GandengTangan</h1>
+            <p class="page-subtitle">Kami siap membantu pertanyaan produk, kolaborasi, dan pemesanan karya pengrajin disabilitas.</p>
         </div>
     </div>
 
@@ -27,7 +27,7 @@
     <div class="card map-placeholder">
         <div>
             <strong>Google Maps</strong>
-            <span>Placeholder lokasi GandengTangan. Lokasi resmi dapat diatur melalui halaman Settings.</span>
+            <span>Lokasi operasional akan disesuaikan dengan pengelola GandengTangan.</span>
         </div>
         <div class="map-pin">📍</div>
     </div>

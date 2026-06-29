@@ -4,11 +4,8 @@
 @section('page_subtitle', 'Kelola kategori produk untuk katalog')
 
 @section('content')
-<div class="admin-page-actions">
-    <div>
-        <h1 class="admin-h1">Kelola Kategori</h1>
-        <p class="admin-p">Kategori dipakai saat tambah/edit produk dan filter katalog public.</p>
-    </div>
+<div class="admin-page-actions compact-actions">
+    <div class="admin-muted">Kategori membantu pembeli menemukan produk dengan lebih cepat.</div>
     <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">+ Tambah Kategori</a>
 </div>
 
@@ -44,11 +41,11 @@
                     </span>
                 </div>
                 <div class="admin-actions">
-                    <a class="admin-mini-btn" href="{{ route('admin.categories.edit', $category) }}">Edit</a>
+                    <a class="admin-mini-btn" title="Edit kategori" href="{{ route('admin.categories.edit', $category) }}">✏ Edit</a>
                     <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" data-confirm-submit data-confirm-title="Hapus Kategori?" data-confirm-message="Kategori {{ $category->name }} akan dihapus jika tidak dipakai produk.">
                         @csrf
                         @method('DELETE')
-                        <button class="admin-mini-btn danger" type="submit">Hapus</button>
+                        <button class="admin-mini-btn danger" title="Hapus kategori" type="submit">🗑 Hapus</button>
                     </form>
                 </div>
             </div>

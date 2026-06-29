@@ -49,7 +49,7 @@
                     <select id="artist_id" name="artist_id" required class="input">
                         @foreach($artists as $artist)
                             <option value="{{ $artist->id }}" {{ (string) old('artist_id', $product->artist_id) === (string) $artist->id ? 'selected' : '' }}>
-                                {{ $artist->name }}{{ $artist->organization ? ' (' . $artist->organization->name . ')' : '' }}
+                                {{ $artist->name }}{{ $artist->skill ? ' - ' . $artist->skill : '' }}
                             </option>
                         @endforeach
                     </select>
@@ -118,13 +118,8 @@
                 <div class="field span-2">
                     <div style="display:flex; gap: 18px; flex-wrap: wrap;">
                         <label class="check">
-                            <input type="checkbox" name="is_sold" value="1" {{ old('is_sold', $product->is_sold) ? 'checked' : '' }}>
-                            <span>Tandai Sold Out</span>
-                        </label>
-
-                        <label class="check">
                             <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
-                            <span>Tampilkan di beranda</span>
+                            <span>Tampilkan sebagai produk unggulan</span>
                         </label>
                     </div>
                 </div>
@@ -137,11 +132,10 @@
         </form>
 
         <div class="admin-help-card">
-            <div class="help-title">Catatan</div>
+            <div class="help-title">Panduan Singkat</div>
             <ul class="help-list">
-                <li>Nomor WhatsApp yang diisi di sini disimpan ke database sebagai nomor admin aktif.</li>
-                <li>Jika gambar lama tidak muncul, upload ulang gambar baru untuk produk ini.</li>
-                <li>Status terjual masih memakai mekanisme legacy `is_sold` sampai fase stok final dikerjakan.</li>
+                <li>Pastikan nama, harga, stok, dan foto produk sudah benar.</li>
+                <li>Gunakan foto yang terang dan menampilkan produk dengan jelas.</li>
             </ul>
         </div>
     </div>

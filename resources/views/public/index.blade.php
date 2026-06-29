@@ -63,19 +63,6 @@
                     <button class="hero-nav hero-next" type="button" aria-label="Berikutnya" id="heroNext">&rsaquo;</button>
                 </div>
 
-                <div class="mini-card">
-                    <div class="mini-row">
-                        <div class="mini-thumb">Info</div>
-                        <div class="mini-meta">
-                            <div class="mini-title">Inquiry via WhatsApp</div>
-                            <div class="mini-sub">Alur beli dibuat sederhana untuk MVP</div>
-                        </div>
-                        <div class="mini-price">MVP</div>
-                    </div>
-                    <div class="mini-actions">
-                        <a href="{{ route('how_to_buy') }}" class="mini-link">Lihat Cara Beli</a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -152,14 +139,23 @@
     <section class="section why-section">
         <div class="section-head">
             <div>
-                <h2 class="section-title">Mengapa Memilih GandengTangan?</h2>
-                <p class="section-subtitle">Katalog inklusif yang sederhana untuk pembeli dan bermanfaat bagi pengrajin.</p>
+                <h2 class="section-title">Dampak GandengTangan</h2>
+                <p class="section-subtitle">Mendukung ekonomi inklusif, UMKM lokal, dan pemasaran digital pengrajin disabilitas.</p>
             </div>
         </div>
         <div class="why-grid">
-            <div class="card why-card"><div class="why-icon">🧡</div><h3>Dukung Dampak Sosial</h3><p>Setiap pembelian membantu membuka peluang ekonomi bagi pengrajin disabilitas.</p></div>
-            <div class="card why-card"><div class="why-icon">📦</div><h3>Produk Terpilih</h3><p>Produk ditampilkan dengan informasi harga, stok, kategori, dan pengrajin yang jelas.</p></div>
-            <div class="card why-card"><div class="why-icon">💬</div><h3>Order Mudah</h3><p>Cukup klik WhatsApp, pesan otomatis berisi detail produk untuk admin.</p></div>
+            <div class="card why-card"><div class="why-icon">🧡</div><h3>Promosi Karya</h3><p>Membantu produk pengrajin disabilitas tampil lebih rapi dan mudah ditemukan.</p></div>
+            <div class="card why-card"><div class="why-icon">📈</div><h3>Jangkauan Pasar</h3><p>Memperluas peluang produk lokal dikenal oleh masyarakat melalui katalog digital.</p></div>
+            <div class="card why-card"><div class="why-icon">🛒</div><h3>Ekonomi Inklusif</h3><p>Memudahkan pembeli mendukung UMKM dan karya lokal melalui WhatsApp admin.</p></div>
+        </div>
+    </section>
+
+    <section class="section why-section">
+        <div class="section-head"><div><h2 class="section-title">Mengapa GandengTangan Dibutuhkan?</h2><p class="section-subtitle">Banyak karya bagus membutuhkan ruang tampil yang mudah diakses dan dipercaya.</p></div></div>
+        <div class="why-grid">
+            <div class="card why-card"><div class="why-icon">🔎</div><h3>Mudah Dicari</h3><p>Kategori dan katalog membantu pembeli menemukan produk yang sesuai kebutuhan.</p></div>
+            <div class="card why-card"><div class="why-icon">✅</div><h3>Informasi Jelas</h3><p>Harga, stok, status, pengrajin, dan tombol WhatsApp tersedia di setiap produk.</p></div>
+            <div class="card why-card"><div class="why-icon">🤝</div><h3>Lebih Dekat</h3><p>Pembeli dapat langsung bertanya ke admin sebelum memesan produk.</p></div>
         </div>
         <div class="cta-strip">
             <div><strong>Siap melihat karya pengrajin?</strong><span>Temukan produk unik dan dukung karya inklusif hari ini.</span></div>

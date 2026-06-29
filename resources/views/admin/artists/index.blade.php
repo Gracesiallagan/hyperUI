@@ -4,17 +4,9 @@
 @section('page_subtitle', 'Kelola data pengrajin dan jumlah karya')
 
 @section('content')
-    <div class="admin-page-actions">
-        <div>
-            <h1 class="admin-h1">Kelola Pengrajin</h1>
-            <p class="admin-p">
-                Daftar pengrajin berdasarkan akses organisasi Anda.
-            </p>
-        </div>
-
-        <a href="{{ route('admin.artists.create') }}" class="btn btn-primary">
-            + Tambah Pengrajin
-        </a>
+    <div class="admin-page-actions compact-actions">
+        <div class="admin-muted">Kelola profil pengrajin dan jumlah karya yang terhubung.</div>
+        <a href="{{ route('admin.artists.create') }}" class="btn btn-primary">+ Tambah Pengrajin</a>
     </div>
 
     <div class="admin-panel">
@@ -24,11 +16,11 @@
         </div>
 
         <div class="admin-table admin-table-scroll">
-            <div class="admin-table-head admin-table-head-5">
+            <div class="admin-table-head admin-table-head-artist-modern">
                 <div>Pengrajin</div>
                 <div>Tipe Disabilitas</div>
-                <div>Organisasi</div>
                 <div>Jumlah Karya</div>
+                <div>Status</div>
                 <div style="text-align:right;">Aksi</div>
             </div>
 
@@ -53,14 +45,16 @@
 
                     <div class="admin-muted">{{ $artist->disability_type }}</div>
 
-                    <div class="admin-muted">{{ $artist->organization->name ?? '-' }}</div>
+                    <div class="admin-count">{{ $artist->products_count ?? 0 }}</div>
 
-                    <div class="admin-count">
-                        {{ $artist->products_count ?? 0 }}
+                    <div>
+                        <span class="badge {{ ($artist->is_active ?? true) ? 'badge-available' : 'badge-sold' }}">
+                            {{ ($artist->is_active ?? true) ? '🟢 Aktif' : '🔴 Nonaktif' }}
+                        </span>
                     </div>
 
                     <div class="admin-actions">
-                        <a class="admin-mini-btn" href="{{ route('admin.artists.edit', $artist) }}">Edit</a>
+                        <a class="admin-mini-btn" title="Edit pengrajin" href="{{ route('admin.artists.edit', $artist) }}">✏ Edit</a>
 
                         <form method="POST"
                               action="{{ route('admin.artists.destroy', $artist) }}"
@@ -69,7 +63,7 @@
                               data-confirm-message="Pengrajin {{ $artist->name }} akan dihapus jika tidak memiliki produk.">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="admin-mini-btn danger">Hapus</button>
+                            <button type="submit" title="Hapus pengrajin" class="admin-mini-btn danger">🗑 Hapus</button>
                         </form>
                     </div>
                 </div>

@@ -16,9 +16,30 @@ class ProductController extends Controller
     {
         $query = Product::with(['category', 'artist']);
 
-        $products = $query->latest()->paginate(15);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('artist', fn ($artist) => $artist->where('name', 'like', "%{$search}%"));
+            });
+        }
 
-        return view('admin.products.index', compact('products'));
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->status === 'available') {
+            $query->where('is_sold', false)->where('stock', '>', 0);
+        } elseif ($request->status === 'sold') {
+            $query->where(function ($q) {
+                $q->where('is_sold', true)->orWhere('stock', '<=', 0);
+            });
+        }
+
+        $products = $query->latest()->paginate(15)->withQueryString();
+        $categories = Category::orderBy('sort_order')->orderBy('name')->get();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create(Request $request)
@@ -85,7 +106,11 @@ class ProductController extends Controller
             'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $validated['is_sold'] = $request->boolean('is_sold') || ((int) $validated['stock']) === 0;
+        if ($request->boolean('is_sold')) {
+            $validated['stock'] = 0;
+        }
+
+        $validated['is_sold'] = ((int) $validated['stock']) === 0;
         $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {

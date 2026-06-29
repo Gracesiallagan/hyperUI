@@ -4,15 +4,24 @@
 @section('page_subtitle', 'Tambah, edit, dan kelola status produk')
 
 @section('content')
-    <div class="admin-page-actions">
-        <div>
-            <h1 class="admin-h1">Kelola Produk</h1>
-            <p class="admin-p">Daftar produk, stok, status, dan gambar upload.</p>
-        </div>
+    <div class="admin-page-actions compact-actions">
+        <form class="admin-filter-form" method="GET" action="{{ route('admin.products.index') }}">
+            <input class="input" type="text" name="search" value="{{ request('search') }}" placeholder="Cari produk atau pengrajin...">
+            <select class="input" name="category">
+                <option value="">Semua kategori</option>
+                @foreach($categories ?? [] as $cat)
+                    <option value="{{ $cat->id }}" {{ (string)request('category') === (string)$cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                @endforeach
+            </select>
+            <select class="input" name="status">
+                <option value="">Semua status</option>
+                <option value="available" {{ request('status') === 'available' ? 'selected' : '' }}>Tersedia</option>
+                <option value="sold" {{ request('status') === 'sold' ? 'selected' : '' }}>Sold Out</option>
+            </select>
+            <button class="btn btn-ghost" type="submit">Filter</button>
+        </form>
 
-        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
-            + Tambah Produk
-        </a>
+        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">+ Tambah Produk</a>
     </div>
 
     <div class="admin-panel">
@@ -76,19 +85,18 @@
 
                     <div class="admin-badges">
                         @if($product->is_featured)
-                            <span class="badge badge-featured">Featured</span>
+                            <span class="badge badge-featured">Produk Unggulan</span>
                         @endif
-
-                        <span class="admin-muted">Stok: {{ (int) ($product->stock ?? ($product->is_sold ? 0 : 1)) }}</span>
+                        <span class="status-stock">Stok: {{ (int) ($product->stock ?? ($product->is_sold ? 0 : 1)) }}</span>
                         @if($product->is_sold)
-                            <span class="badge badge-sold">Sold Out</span>
+                            <span class="badge badge-sold">🔴 Sold Out</span>
                         @else
-                            <span class="badge badge-available">Tersedia</span>
+                            <span class="badge badge-available">🟢 Tersedia</span>
                         @endif
                     </div>
 
                     <div class="admin-actions">
-                        <a class="admin-mini-btn" href="{{ route('admin.products.edit', $product) }}">Edit</a>
+                        <a class="admin-mini-btn" title="Edit produk" href="{{ route('admin.products.edit', $product) }}">✏ Edit</a>
 
                         <form method="POST"
                               action="{{ route('admin.products.destroy', $product) }}"
@@ -97,7 +105,7 @@
                               data-confirm-message="Produk {{ $product->title }} akan dihapus permanen dari katalog.">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="admin-mini-btn danger">Hapus</button>
+                            <button type="submit" title="Hapus produk" class="admin-mini-btn danger">🗑 Hapus</button>
                         </form>
                     </div>
                 </div>

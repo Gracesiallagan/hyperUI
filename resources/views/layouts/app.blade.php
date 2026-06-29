@@ -26,7 +26,9 @@
                 <span class="brand-name">{{ $siteSetting->site_name ?? 'GandengTangan' }}</span>
             </a>
 
-            <nav class="nav">
+            <button class="mobile-menu-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+
+            <nav class="nav" id="mainNav">
                 <a href="{{ route('home') }}"
                    class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                     Home
@@ -51,15 +53,20 @@
                    class="nav-link {{ request()->routeIs('how_to_buy') ? 'active' : '' }}">
                     Cara Membeli
                 </a>
+
+                <a href="{{ route('cart.index') }}"
+                   class="nav-link {{ request()->routeIs('cart.*') ? 'active' : '' }}">
+                    🛒 Keranjang
+                </a>
             </nav>
 
             <div class="header-actions">
                 @auth
-                    <a class="btn btn-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    <a class="btn btn-dark" href="{{ route('admin.dashboard') }}">▦ Dashboard</a>
 
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;" data-confirm-submit data-confirm-title="Logout?" data-confirm-message="Anda akan keluar dari dashboard admin.">
                         @csrf
-                        <button class="btn btn-ghost" type="submit">Logout</button>
+                        <button class="btn btn-ghost" type="submit">↪ Logout</button>
                     </form>
                 @else
                     <a class="btn btn-dark" href="{{ route('login') }}">Login Admin</a>
@@ -92,11 +99,21 @@
                 <h3>Kontak</h3>
                 <span>{{ optional($siteSetting)->contact_email ?: 'halo@gandengtangan.id' }}</span>
                 <span>{{ optional($siteSetting)->address ?: 'Indonesia' }}</span>
-                <a href="https://wa.me/{{ preg_replace('/\D+/', '', $siteSetting->whatsapp_number ?? '6281361428113') }}" target="_blank" rel="noreferrer">WhatsApp Admin</a>
+                <a href="https://wa.me/{{ preg_replace('/\D+/', '', optional($siteSetting)->whatsapp_number ?? '6281361428113') }}" target="_blank" rel="noreferrer">WhatsApp Admin</a>
             </div>
         </div>
         <div class="container footer-bottom">&copy; {{ date('Y') }} GandengTangan. Semua hak dilindungi.</div>
     </footer>
     @include('components.confirm-modal')
+    <script>
+        document.addEventListener('click', function (event) {
+            const toggle = event.target.closest('.mobile-menu-toggle');
+            if (!toggle) return;
+            const nav = document.getElementById('mainNav');
+            const isOpen = nav.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            toggle.textContent = isOpen ? '×' : '☰';
+        });
+    </script>
 </body>
 </html>

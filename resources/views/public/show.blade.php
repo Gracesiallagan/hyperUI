@@ -8,10 +8,13 @@
     $waNumber = preg_replace('/\D+/', '', $waNumber);
     if (str_starts_with($waNumber, '0')) $waNumber = '62'.substr($waNumber, 1);
     $artistName = $product->artist->name ?? '-';
-    $stockStatus = $product->is_sold ? 'Sold Out' : 'Tersedia (stok: '.(int)($product->stock ?? 1).')';
+    $isLocalUrl = str_contains(config('app.url'), '127.0.0.1') || str_contains(config('app.url'), 'localhost');
     $waMessage = $product->is_sold
-        ? "Halo admin GandengTangan, saya ingin tanya ketersediaan produk {$product->title}. Harga: {$product->formatted_price}. Pengrajin: {$artistName}. Status: {$stockStatus}. Link: ".route('product.show', $product)
-        : "Halo admin GandengTangan, saya tertarik membeli produk {$product->title}. Harga: {$product->formatted_price}. Pengrajin: {$artistName}. Status: {$stockStatus}. Link: ".route('product.show', $product);
+        ? "Halo Admin GandengTangan, saya ingin bertanya ketersediaan produk berikut:\n\nProduk: {$product->title}\nHarga: {$product->formatted_price}\nPengrajin: {$artistName}\nStatus: Sold Out\n\nApakah produk ini masih bisa dipesan kembali?"
+        : "Halo Admin GandengTangan, saya tertarik dengan produk berikut:\n\nProduk: {$product->title}\nHarga: {$product->formatted_price}\nPengrajin: {$artistName}\nStatus: Tersedia\nStok: ".(int)($product->stock ?? 1)."\n\nSaya ingin bertanya atau melakukan pemesanan produk ini.";
+    if (! $isLocalUrl) {
+        $waMessage .= "\n\nHalaman Produk: ".route('product.show', $product);
+    }
 @endphp
 
 <div class="container page">
@@ -66,12 +69,18 @@
                 </div>
             </div>
 
-            <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode($waMessage) }}"
-               target="_blank"
-               rel="noreferrer"
-               class="btn btn-primary detail-wa">
-                {{ $product->is_sold ? 'Tanya Ketersediaan' : 'Beli via WhatsApp' }}
-            </a>
+            <div class="detail-actions">
+                <form method="POST" action="{{ route('cart.store', $product) }}">
+                    @csrf
+                    <button class="btn btn-ghost detail-wa" type="submit">🛒 Simpan ke Keranjang</button>
+                </form>
+                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode($waMessage) }}"
+                   target="_blank"
+                   rel="noreferrer"
+                   class="btn btn-primary detail-wa">
+                    {{ $product->is_sold ? 'Tanya Ketersediaan' : 'Beli via WhatsApp' }}
+                </a>
+            </div>
         </div>
     </section>
 

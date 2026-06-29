@@ -19,7 +19,10 @@
         <form method="POST"
               action="{{ route('admin.artists.store') }}"
               enctype="multipart/form-data"
-              class="admin-form-card">
+              class="admin-form-card"
+              data-confirm-submit
+              data-confirm-title="Simpan Pengrajin?"
+              data-confirm-message="Profil pengrajin baru akan ditambahkan.">
             @csrf
 
             @if ($errors->any())
@@ -93,11 +96,10 @@
         </form>
 
         <div class="admin-help-card">
-            <div class="help-title">Catatan</div>
+            <div class="help-title">Panduan Singkat</div>
             <ul class="help-list">
-                <li>Avatar akan dibuat otomatis dari huruf pertama nama.</li>
-                <li>Pengrajin otomatis terhubung ke organisasi user yang sedang login.</li>
-                <li>Anda bisa mengubah foto kapan saja melalui menu Edit.</li>
+                <li>Isi profil pengrajin dengan bahasa yang ramah dan singkat.</li>
+                <li>Gunakan foto yang jelas jika tersedia.</li>
             </ul>
         </div>
     </div>

@@ -32,7 +32,7 @@
         <div class="about-feature card"><div class="about-feature-icon">🧡</div><div class="about-feature-title">Dampak Sosial</div><div class="about-feature-text">Setiap transaksi mendukung kemandirian ekonomi dan apresiasi karya.</div></div>
         <div class="about-feature card"><div class="about-feature-icon">📱</div><div class="about-feature-title">Mudah Diakses</div><div class="about-feature-text">Tampilan dirancang responsive agar nyaman digunakan di ponsel maupun desktop.</div></div>
         <div class="about-feature card"><div class="about-feature-icon">✅</div><div class="about-feature-title">Informasi Jelas</div><div class="about-feature-text">Status Tersedia dan Sold Out dibuat jelas untuk menghindari kebingungan.</div></div>
-        <div class="about-feature card"><div class="about-feature-icon">🌱</div><div class="about-feature-title">Siap Berkembang</div><div class="about-feature-text">MVP ini bisa dikembangkan menjadi marketplace inklusif yang lebih lengkap.</div></div>
+        <div class="about-feature card"><div class="about-feature-icon">🌱</div><div class="about-feature-title">Siap Berkembang</div><div class="about-feature-text">Platform ini dapat terus berkembang untuk mendukung lebih banyak pengrajin dan produk lokal.</div></div>
     </div>
 </section>
 @endsection

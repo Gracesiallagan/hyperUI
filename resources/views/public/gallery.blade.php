@@ -58,12 +58,25 @@
             @php
                 $defaultText = config('whatsapp.default_text', 'Halo admin GandengTangan, saya tertarik dengan produk ini.');
 
-                $message = trim($defaultText)."\n"
-                    ."Judul: {$p->title}\n"
-                    ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
-                    ."Pengrajin: ".($p->artist->name ?? '-')."\n"
-                    ."Status: ".($p->is_sold ? 'Sold Out' : 'Tersedia (stok: '.(int)($p->stock ?? 1).')')."\n"
-                    ."Link: ".route('product.show', $p);
+                $isLocalUrl = str_contains(config('app.url'), '127.0.0.1') || str_contains(config('app.url'), 'localhost');
+                $message = $p->is_sold
+                    ? "Halo Admin GandengTangan, saya ingin bertanya ketersediaan produk berikut:\n\n"
+                        ."Produk: {$p->title}\n"
+                        ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
+                        ."Pengrajin: ".($p->artist->name ?? '-')."\n"
+                        ."Status: Sold Out\n\n"
+                        ."Apakah produk ini masih bisa dipesan kembali?"
+                    : "Halo Admin GandengTangan, saya tertarik dengan produk berikut:\n\n"
+                        ."Produk: {$p->title}\n"
+                        ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
+                        ."Pengrajin: ".($p->artist->name ?? '-')."\n"
+                        ."Status: Tersedia\n"
+                        ."Stok: ".(int)($p->stock ?? 1)."\n\n"
+                        ."Saya ingin bertanya atau melakukan pemesanan produk ini.";
+
+                if (! $isLocalUrl) {
+                    $message .= "\n\nHalaman Produk: ".route('product.show', $p);
+                }
 
                 $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
             @endphp
@@ -94,6 +107,10 @@
 
                     <div class="artwork-actions">
                         <a class="btn btn-ghost" href="{{ route('product.show', $p) }}">Detail</a>
+                        <form method="POST" action="{{ route('cart.store', $p) }}">
+                            @csrf
+                            <button class="btn btn-ghost" type="submit">🛒 Simpan</button>
+                        </form>
                         <a class="btn btn-dark" href="{{ $waLink }}" target="_blank" rel="noreferrer">
                             {{ $p->is_sold ? 'Tanya Ketersediaan' : 'Beli via WhatsApp' }}
                         </a>

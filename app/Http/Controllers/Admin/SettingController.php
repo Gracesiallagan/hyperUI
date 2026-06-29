@@ -47,7 +47,7 @@ class SettingController extends Controller
 
         $setting->update($validated);
 
-        return redirect()->route('admin.settings.edit')->with('success', 'Settings berhasil disimpan.');
+        return redirect()->route('admin.settings.edit')->with('success', 'Pengaturan berhasil disimpan.');
     }
 
     private function normalizeWhatsappNumber(string $number): string

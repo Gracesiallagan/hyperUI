@@ -19,7 +19,10 @@
         <form method="POST"
               action="{{ route('admin.products.store') }}"
               enctype="multipart/form-data"
-              class="admin-form-card">
+              class="admin-form-card"
+              data-confirm-submit
+              data-confirm-title="Simpan Produk?"
+              data-confirm-message="Produk baru akan ditambahkan ke katalog.">
             @csrf
 
             @if ($errors->any())
@@ -46,7 +49,7 @@
                         <option value="" disabled {{ old('artist_id') ? '' : 'selected' }}>Pilih pengrajin</option>
                         @foreach($artists as $artist)
                             <option value="{{ $artist->id }}" {{ (string)old('artist_id') === (string)$artist->id ? 'selected' : '' }}>
-                                {{ $artist->name }}{{ $artist->organization ? ' (' . $artist->organization->name . ')' : '' }}
+                                {{ $artist->name }}{{ $artist->skill ? ' - ' . $artist->skill : '' }}
                             </option>
                         @endforeach
                     </select>
@@ -119,12 +122,10 @@
         </form>
 
         <div class="admin-help-card">
-            <div class="help-title">Tips</div>
+            <div class="help-title">Panduan Singkat</div>
             <ul class="help-list">
-                <li>Gunakan judul singkat dan mudah dicari.</li>
-                <li>Harga disarankan tanpa titik/koma (contoh: 500000).</li>
-                <li>Nomor WhatsApp admin disimpan ke database dan dipakai di halaman publik.</li>
-                <li>Jika gambar belum siap, Anda bisa upload nanti lewat Edit.</li>
+                <li>Gunakan nama produk yang mudah dipahami pembeli.</li>
+                <li>Pastikan foto produk jelas dan menarik.</li>
             </ul>
         </div>
     </div>

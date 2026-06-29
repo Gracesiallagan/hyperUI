@@ -21,8 +21,20 @@
     const confirmBtn = document.getElementById('gtModalConfirm');
     let pendingForm = null;
 
+    function showMessage(modalTitle, modalMessage) {
+        pendingForm = null;
+        title.textContent = modalTitle || 'Berhasil';
+        message.textContent = modalMessage || 'Aksi berhasil dilakukan.';
+        confirmBtn.textContent = 'Oke';
+        modal.querySelectorAll('[data-modal-cancel]').forEach(btn => btn.style.display = 'none');
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+
     function openModal(form) {
         pendingForm = form;
+        confirmBtn.textContent = form.dataset.confirmButton || 'Konfirmasi';
+        modal.querySelectorAll('[data-modal-cancel]').forEach(btn => btn.style.display = 'inline-flex');
         title.textContent = form.dataset.confirmTitle || 'Konfirmasi Aksi';
         message.textContent = form.dataset.confirmMessage || 'Apakah Anda yakin ingin melanjutkan?';
         modal.classList.add('show');
@@ -34,6 +46,8 @@
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
         pendingForm = null;
+        confirmBtn.textContent = 'Konfirmasi';
+        modal.querySelectorAll('[data-modal-cancel]').forEach(btn => btn.style.display = 'inline-flex');
     }
 
     document.addEventListener('submit', function (event) {
@@ -45,10 +59,21 @@
     });
 
     confirmBtn.addEventListener('click', function () {
-        if (!pendingForm) return;
+        if (!pendingForm) {
+            closeModal();
+            return;
+        }
         pendingForm.dataset.confirmed = 'true';
         pendingForm.submit();
     });
+
+    @if (session('success'))
+        showMessage('Berhasil', @json(session('success')));
+    @elseif (session('status'))
+        showMessage('Berhasil', @json(session('status')));
+    @elseif ($errors->any())
+        showMessage('Periksa Data', @json($errors->first()));
+    @endif
 
     modal.querySelectorAll('[data-modal-cancel]').forEach(btn => btn.addEventListener('click', closeModal));
     document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });

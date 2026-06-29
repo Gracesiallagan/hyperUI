@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard Admin - GandengTangan')
 @section('page_title', 'Dashboard')
-@section('page_subtitle', 'Ringkasan data katalog MVP')
+@section('page_subtitle', 'Ringkasan produk, pengrajin, dan kategori GandengTangan')
 
 @section('content')
     <section class="admin-cards">
@@ -51,7 +51,7 @@
 
                         <div class="admin-badges">
                             @if($p->is_featured)
-                                <span class="badge badge-featured">Featured</span>
+                                <span class="badge badge-featured">Produk Unggulan</span>
                             @endif
 
                             @if($p->is_sold)

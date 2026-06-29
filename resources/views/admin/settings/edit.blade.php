@@ -1,18 +1,15 @@
 @extends('layouts.admin')
-@section('title', 'Settings')
-@section('page_title', 'Settings')
-@section('page_subtitle', 'Konfigurasi dasar website dan WhatsApp')
+@section('title', 'Pengaturan')
+@section('page_title', 'Pengaturan')
+@section('page_subtitle', 'Atur informasi website, kontak, dan WhatsApp admin')
 
 @section('content')
-<div class="admin-page-actions">
-    <div>
-        <h1 class="admin-h1">Settings Website</h1>
-        <p class="admin-p">Nomor WhatsApp di sini dipakai oleh tombol order public.</p>
-    </div>
+<div class="admin-page-actions compact-actions">
+    <div class="admin-muted">Lengkapi informasi agar pengunjung mudah menghubungi GandengTangan.</div>
 </div>
 
 <div class="admin-form-wrap">
-    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="admin-form-card" data-confirm-submit data-confirm-title="Simpan Settings?" data-confirm-message="Perubahan settings akan langsung dipakai di halaman public.">
+    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="admin-form-card" data-confirm-submit data-confirm-title="Simpan Pengaturan?" data-confirm-message="Perubahan pengaturan akan diterapkan pada website.">
         @csrf
         @method('PUT')
 
@@ -78,7 +75,7 @@
         </div>
 
         <div class="admin-form-actions">
-            <button class="btn btn-primary" type="submit">Simpan Settings</button>
+            <button class="btn btn-primary" type="submit">Simpan Pengaturan</button>
             <a href="{{ route('admin.dashboard') }}" class="btn btn-ghost">Kembali</a>
         </div>
     </form>
