@@ -14,6 +14,7 @@ class Product extends Model
     'category_id',
     'medium',
     'price',
+    'stock',
     'image',
     'description',
     'is_sold',
@@ -51,10 +52,17 @@ class Product extends Model
             return $this->image;
         }
 
-        if (!Storage::disk('public')->exists($this->image)) {
-            return null;
+        $path = ltrim($this->image, '/');
+        $path = preg_replace('#^(storage/|public/)#', '', $path);
+
+        if (Storage::disk('public')->exists($path)) {
+            return route('media.show', ['path' => $path]);
         }
 
-        return route('media.show', ['path' => $this->image]);
+        if (file_exists(public_path($path))) {
+            return asset($path);
+        }
+
+        return null;
     }
 }

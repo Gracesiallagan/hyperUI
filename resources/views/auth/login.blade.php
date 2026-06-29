@@ -12,9 +12,9 @@
                     <span>GandengTangan</span>
                 </div>
 
-                <h1 class="auth-title">Sign In</h1>
+                <h1 class="auth-title">Login Admin</h1>
                 <p class="auth-subtitle">
-                    Masuk untuk mengelola karya, artis, dan produk di dashboard admin.
+                    Masuk untuk mengelola produk, pengrajin, kategori, dan settings GandengTangan.
                 </p>
             </div>
 
@@ -54,9 +54,7 @@
                         <span>Remember me</span>
                     </label>
 
-                    @if (Route::has('password.request'))
-                        <a class="link" href="{{ route('password.request') }}">Lupa password?</a>
-                    @endif
+                    <a class="link" href="{{ route('password.request') }}">Lupa password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary auth-btn">Login</button>

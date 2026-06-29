@@ -41,9 +41,9 @@
                 </div>
 
                 <div class="field">
-                    <label class="label" for="artist_id">Seniman</label>
+                    <label class="label" for="artist_id">Pengrajin</label>
                     <select id="artist_id" name="artist_id" required class="input">
-                        <option value="" disabled {{ old('artist_id') ? '' : 'selected' }}>Pilih seniman</option>
+                        <option value="" disabled {{ old('artist_id') ? '' : 'selected' }}>Pilih pengrajin</option>
                         @foreach($artists as $artist)
                             <option value="{{ $artist->id }}" {{ (string)old('artist_id') === (string)$artist->id ? 'selected' : '' }}>
                                 {{ $artist->name }}{{ $artist->organization ? ' (' . $artist->organization->name . ')' : '' }}
@@ -79,8 +79,15 @@
                 </div>
 
                 <div class="field">
+                    <label class="label" for="stock">Stok</label>
+                    <input id="stock" type="number" name="stock" value="{{ old('stock', 1) }}" required min="0" class="input">
+                    <div class="hint">Isi 0 untuk otomatis Sold Out.</div>
+                    @error('stock') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
                     <label class="label" for="whatsapp_number">Nomor WhatsApp Admin</label>
-                    <input id="whatsapp_number" type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '') }}" class="input" placeholder="Contoh: 6281234567890">
+                    <input id="whatsapp_number" type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '081361428113') }}" class="input" placeholder="Contoh: 081361428113">
                     @error('whatsapp_number') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
 

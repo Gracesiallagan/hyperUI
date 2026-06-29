@@ -19,7 +19,10 @@
         <form method="POST"
               action="{{ route('admin.products.update', $product) }}"
               enctype="multipart/form-data"
-              class="admin-form-card">
+              class="admin-form-card"
+              data-confirm-submit
+              data-confirm-title="Simpan Perubahan Produk?"
+              data-confirm-message="Data produk akan diperbarui dan langsung tampil di katalog.">
             @csrf
             @method('PUT')
 
@@ -78,8 +81,15 @@
                 </div>
 
                 <div class="field">
+                    <label class="label" for="stock">Stok</label>
+                    <input id="stock" type="number" name="stock" value="{{ old('stock', $product->stock ?? ($product->is_sold ? 0 : 1)) }}" required min="0" class="input">
+                    <div class="hint">Isi 0 untuk otomatis Sold Out.</div>
+                    @error('stock') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
                     <label class="label" for="whatsapp_number">Nomor WhatsApp Admin</label>
-                    <input id="whatsapp_number" type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '') }}" class="input" placeholder="Contoh: 6281234567890">
+                    <input id="whatsapp_number" type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '081361428113') }}" class="input" placeholder="Contoh: 081361428113">
                     @error('whatsapp_number') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
 
@@ -109,7 +119,7 @@
                     <div style="display:flex; gap: 18px; flex-wrap: wrap;">
                         <label class="check">
                             <input type="checkbox" name="is_sold" value="1" {{ old('is_sold', $product->is_sold) ? 'checked' : '' }}>
-                            <span>Tandai terjual</span>
+                            <span>Tandai Sold Out</span>
                         </label>
 
                         <label class="check">

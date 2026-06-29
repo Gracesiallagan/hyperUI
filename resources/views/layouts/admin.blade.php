@@ -23,13 +23,16 @@
                href="{{ route('admin.dashboard') }}">Dashboard</a>
 
             <a class="admin-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
-               href="{{ route('admin.products.index') }}">Products</a>
+               href="{{ route('admin.products.index') }}">Produk</a>
 
             <a class="admin-link {{ request()->routeIs('admin.artists.*') ? 'active' : '' }}"
                href="{{ route('admin.artists.index') }}">Pengrajin</a>
 
-            <a class="admin-link" href="#" aria-disabled="true">Categories</a>
-            <a class="admin-link" href="#" aria-disabled="true">Settings</a>
+            <a class="admin-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+               href="{{ route('admin.categories.index') }}">Kategori</a>
+
+            <a class="admin-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
+               href="{{ route('admin.settings.edit') }}">Settings</a>
         </nav>
 
         <div class="admin-sidefoot">
@@ -41,7 +44,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" data-confirm-submit data-confirm-title="Logout?" data-confirm-message="Anda akan keluar dari panel admin.">
                 @csrf
                 <button type="submit" class="btn btn-ghost admin-logout">Logout</button>
             </form>
@@ -71,5 +74,22 @@
         </main>
     </div>
 </div>
+@include('components.confirm-modal')
+<script>
+document.addEventListener('change', function (event) {
+    const input = event.target;
+    if (!input.matches('input[type="file"][accept*="image"]') || !input.files || !input.files[0]) return;
+
+    let preview = input.closest('.field')?.querySelector('.js-image-preview');
+    if (!preview) {
+        preview = document.createElement('img');
+        preview.className = 'js-image-preview image-preview';
+        input.closest('.field')?.insertBefore(preview, input.closest('.filebox'));
+    }
+
+    preview.src = URL.createObjectURL(input.files[0]);
+    preview.alt = 'Preview gambar upload';
+});
+</script>
 </body>
 </html>

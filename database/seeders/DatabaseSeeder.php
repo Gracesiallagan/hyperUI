@@ -86,16 +86,16 @@ class DatabaseSeeder extends Seeder
         ];
 
         $products = [
-            ['title' => 'Senja di Jakarta', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Akrilik di Kanvas', 'price' => 500000, 'artist_id' => $artists[0]->id, 'is_featured' => true],
-            ['title' => 'Samudra Mimpi', 'category_id' => $categories['Digital Art']->id, 'medium' => 'High-Res Print', 'price' => 350000, 'artist_id' => $artists[1]->id, 'is_featured' => true],
-            ['title' => 'Vas Bunga Harapan', 'category_id' => $categories['Kriya']->id, 'medium' => 'Tanah Liat & Glaze', 'price' => 150000, 'artist_id' => $artists[2]->id, 'is_featured' => true],
-            ['title' => 'Tenun Harapan', 'category_id' => $categories['Tekstil']->id, 'medium' => 'Tekstil Tradisional', 'price' => 250000, 'artist_id' => $artists[3]->id, 'is_featured' => true],
-            ['title' => 'Gunung Damai', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Cat Air', 'price' => 750000, 'artist_id' => $artists[4]->id],
-            ['title' => 'Mimpi Berwarna', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Cat Air di Kanvas', 'price' => 400000, 'artist_id' => $artists[5]->id, 'is_sold' => true],
+            ['title' => 'Senja di Jakarta', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Akrilik di Kanvas', 'price' => 500000, 'stock' => 3, 'artist_id' => $artists[0]->id, 'is_featured' => true, 'description' => 'Lukisan hangat tentang harapan dan aktivitas kota yang tetap ramah bagi semua orang.'],
+            ['title' => 'Samudra Mimpi', 'category_id' => $categories['Digital Art']->id, 'medium' => 'High-Res Print', 'price' => 350000, 'stock' => 5, 'artist_id' => $artists[1]->id, 'is_featured' => true, 'description' => 'Ilustrasi digital bernuansa biru-oranye tentang keberanian mengejar mimpi.'],
+            ['title' => 'Vas Bunga Harapan', 'category_id' => $categories['Kriya']->id, 'medium' => 'Tanah Liat & Glaze', 'price' => 150000, 'stock' => 4, 'artist_id' => $artists[2]->id, 'is_featured' => true, 'description' => 'Vas keramik buatan tangan dengan bentuk organik, cocok untuk dekorasi meja.'],
+            ['title' => 'Tenun Harapan', 'category_id' => $categories['Tekstil']->id, 'medium' => 'Tekstil Tradisional', 'price' => 250000, 'stock' => 2, 'artist_id' => $artists[3]->id, 'is_featured' => true, 'description' => 'Kain tenun kecil dengan motif cerah yang dibuat teliti dan penuh makna.'],
+            ['title' => 'Gunung Damai', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Cat Air', 'price' => 750000, 'stock' => 1, 'artist_id' => $artists[4]->id, 'description' => 'Pemandangan gunung yang menenangkan sebagai simbol ruang aman dan damai.'],
+            ['title' => 'Mimpi Berwarna', 'category_id' => $categories['Lukisan']->id, 'medium' => 'Cat Air di Kanvas', 'price' => 400000, 'stock' => 0, 'artist_id' => $artists[5]->id, 'is_sold' => true, 'description' => 'Karya ekspresif dengan warna ceria. Saat ini Sold Out, tetapi ketersediaan karya serupa bisa ditanyakan.'],
         ];
 
         foreach ($products as $product) {
-            Product::firstOrCreate(
+            Product::updateOrCreate(
                 ['title' => $product['title'], 'artist_id' => $product['artist_id']],
                 $product
             );
@@ -114,8 +114,11 @@ class DatabaseSeeder extends Seeder
         Setting::query()->updateOrCreate(
             ['id' => 1],
             [
-                'whatsapp_number' => env('WHATSAPP_NUMBER', '6280000000000'),
+                'whatsapp_number' => env('WHATSAPP_NUMBER', '6281361428113'),
                 'site_name' => 'GandengTangan',
+                'contact_email' => 'halo@gandengtangan.id',
+                'address' => 'Indonesia',
+                'short_description' => 'GandengTangan adalah katalog inklusif untuk membantu pengrajin disabilitas memasarkan karya dan produk mereka melalui pemesanan via WhatsApp.',
             ]
         );
     }

@@ -9,5 +9,10 @@ class Setting extends Model
     protected $fillable = [
         'whatsapp_number',
         'site_name',
+        'contact_email',
+        'address',
+        'short_description',
+        'logo',
+        'favicon',
     ];
 }

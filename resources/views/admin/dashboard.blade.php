@@ -6,53 +6,11 @@
 
 @section('content')
     <section class="admin-cards">
-        <div class="admin-stat">
-            <div class="admin-stat-icon">User</div>
-            <div>
-                <div class="admin-stat-value">{{ $stats['users'] }}</div>
-                <div class="admin-stat-label">Users</div>
-            </div>
-        </div>
-
-        <div class="admin-stat">
-            <div class="admin-stat-icon">Maker</div>
-            <div>
-                <div class="admin-stat-value">{{ $stats['artists'] }}</div>
-                <div class="admin-stat-label">Pengrajin</div>
-            </div>
-        </div>
-
-        <div class="admin-stat">
-            <div class="admin-stat-icon">Cat</div>
-            <div>
-                <div class="admin-stat-value">{{ $stats['categories'] }}</div>
-                <div class="admin-stat-label">Categories</div>
-            </div>
-        </div>
-
-        <div class="admin-stat">
-            <div class="admin-stat-icon">Prod</div>
-            <div>
-                <div class="admin-stat-value">{{ $stats['products'] }}</div>
-                <div class="admin-stat-label">Products</div>
-            </div>
-        </div>
-
-        <div class="admin-stat">
-            <div class="admin-stat-icon">Feat</div>
-            <div>
-                <div class="admin-stat-value">{{ $stats['featured_products'] }}</div>
-                <div class="admin-stat-label">Featured</div>
-            </div>
-        </div>
-
-        <div class="admin-stat">
-            <div class="admin-stat-icon">Sold</div>
-            <div>
-                <div class="admin-stat-value">{{ $stats['sold_products'] }}</div>
-                <div class="admin-stat-label">Sold</div>
-            </div>
-        </div>
+        <div class="admin-stat"><div class="admin-stat-icon">📦</div><div><div class="admin-stat-value">{{ $stats['products'] }}</div><div class="admin-stat-label">Total Produk</div></div></div>
+        <div class="admin-stat"><div class="admin-stat-icon">✅</div><div><div class="admin-stat-value">{{ $stats['available_products'] }}</div><div class="admin-stat-label">Produk Tersedia</div></div></div>
+        <div class="admin-stat"><div class="admin-stat-icon">⛔</div><div><div class="admin-stat-value">{{ $stats['sold_products'] }}</div><div class="admin-stat-label">Sold Out</div></div></div>
+        <div class="admin-stat"><div class="admin-stat-icon">🧡</div><div><div class="admin-stat-value">{{ $stats['artists'] }}</div><div class="admin-stat-label">Pengrajin</div></div></div>
+        <div class="admin-stat"><div class="admin-stat-icon">🏷️</div><div><div class="admin-stat-value">{{ $stats['categories'] }}</div><div class="admin-stat-label">Kategori</div></div></div>
     </section>
 
     <section class="admin-grid-2">
@@ -97,9 +55,9 @@
                             @endif
 
                             @if($p->is_sold)
-                                <span class="badge badge-sold">Sold</span>
+                                <span class="badge badge-sold">Sold Out</span>
                             @else
-                                <span class="badge badge-available">Available</span>
+                                <span class="badge badge-available">Tersedia</span>
                             @endif
                         </div>
                     </div>

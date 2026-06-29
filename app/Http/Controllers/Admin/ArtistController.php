@@ -30,10 +30,18 @@ class ArtistController extends Controller
             'name'            => 'required|string|max:255',
             'disability_type' => 'required|string',
             'bio'             => 'nullable|string',
-            'photo'           => 'nullable|image|max:2048',
+            'skill'           => 'nullable|string|max:255',
+            'is_active'       => 'boolean',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $validated['organization_id'] = Organization::query()->value('id');
+        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['organization_id'] = Organization::query()->value('id')
+            ?? Organization::query()->create([
+                'name' => 'GandengTangan',
+                'icon' => '🤝',
+                'description' => 'Organisasi utama GandengTangan',
+            ])->id;
         $validated['avatar'] = strtoupper(substr($validated['name'], 0, 1));
 
         if ($request->hasFile('photo')) {
@@ -42,7 +50,7 @@ class ArtistController extends Controller
 
         Artist::create($validated);
 
-        return redirect()->route('admin.artists.index')->with('success', 'Seniman berhasil ditambahkan!');
+        return redirect()->route('admin.artists.index')->with('success', 'Pengrajin berhasil ditambahkan!');
     }
 
     public function edit(Artist $artist)
@@ -57,9 +65,12 @@ class ArtistController extends Controller
             'name'            => 'required|string|max:255',
             'disability_type' => 'required|string',
             'bio'             => 'nullable|string',
-            'photo'           => 'nullable|image|max:2048',
+            'skill'           => 'nullable|string|max:255',
+            'is_active'       => 'boolean',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['avatar'] = strtoupper(substr($validated['name'], 0, 1));
 
         if ($request->hasFile('photo')) {
@@ -69,14 +80,19 @@ class ArtistController extends Controller
 
         $artist->update($validated);
 
-        return redirect()->route('admin.artists.index')->with('success', 'Data seniman berhasil diperbarui!');
+        return redirect()->route('admin.artists.index')->with('success', 'Data pengrajin berhasil diperbarui!');
     }
 
     public function destroy(Artist $artist)
     {
+        if ($artist->products()->exists()) {
+            return redirect()->route('admin.artists.index')
+                ->with('success', 'Pengrajin tidak dihapus karena masih memiliki produk. Pindahkan/hapus produk terlebih dahulu.');
+        }
+
         if ($artist->photo) Storage::disk('public')->delete($artist->photo);
         $artist->delete();
 
-        return redirect()->route('admin.artists.index')->with('success', 'Data seniman berhasil dihapus!');
+        return redirect()->route('admin.artists.index')->with('success', 'Data pengrajin berhasil dihapus!');
     }
 }

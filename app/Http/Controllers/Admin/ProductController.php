@@ -38,11 +38,14 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'medium'      => 'nullable|string|max:255',
             'price'       => 'required|integer|min:0',
+            'stock'       => 'required|integer|min:0',
             'description' => 'nullable|string',
             'artist_id'   => 'required|exists:artists,id',
-            'image'       => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'whatsapp_number' => 'nullable|string|max:30',
         ]);
+
+        $validated['is_sold'] = ((int) $validated['stock']) === 0;
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
@@ -73,15 +76,16 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'medium'      => 'nullable|string|max:255',
             'price'       => 'required|integer|min:0',
+            'stock'       => 'required|integer|min:0',
             'description' => 'nullable|string',
             'artist_id'   => 'required|exists:artists,id',
             'is_sold'     => 'boolean',
             'is_featured' => 'boolean',
-            'image'       => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $validated['is_sold'] = $request->boolean('is_sold');
+        $validated['is_sold'] = $request->boolean('is_sold') || ((int) $validated['stock']) === 0;
         $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {
@@ -99,7 +103,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image) Storage::disk('public')->delete($product->image);
+        if ($product->image) {
+            Storage::disk('public')->delete(preg_replace('#^(storage/|public/)#', '', ltrim($product->image, '/')));
+        }
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus!');
@@ -107,6 +113,8 @@ class ProductController extends Controller
 
     private function saveWhatsappNumber(?string $number): void
     {
+        $number = $this->normalizeWhatsappNumber($number);
+
         if (!$number) {
             return;
         }
@@ -115,5 +123,20 @@ class ProductController extends Controller
             ['id' => 1],
             ['whatsapp_number' => $number]
         );
+    }
+
+    private function normalizeWhatsappNumber(?string $number): ?string
+    {
+        if (!$number) {
+            return null;
+        }
+
+        $number = preg_replace('/\D+/', '', $number);
+
+        if (str_starts_with($number, '0')) {
+            return '62' . substr($number, 1);
+        }
+
+        return $number;
     }
 }

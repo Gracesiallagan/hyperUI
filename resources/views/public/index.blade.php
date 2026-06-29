@@ -80,6 +80,12 @@
         </div>
     </section>
 
+    <section class="stats compact-stats" aria-label="Statistik GandengTangan">
+        <div class="stat-card"><div class="stat-icon">Produk</div><div><div class="stat-value">{{ $stats['products'] }}</div><div class="stat-label">Produk Katalog</div></div></div>
+        <div class="stat-card"><div class="stat-icon">Karya</div><div><div class="stat-value">{{ $stats['artists'] }}</div><div class="stat-label">Pengrajin</div></div></div>
+        <div class="stat-card"><div class="stat-icon">Sold</div><div><div class="stat-value">{{ $stats['sold'] }}</div><div class="stat-label">Produk Sold Out</div></div></div>
+    </section>
+
     <section class="section">
         <div class="section-head">
             <div>
@@ -142,6 +148,24 @@
             </section>
         @endif
     @endforeach
+
+    <section class="section why-section">
+        <div class="section-head">
+            <div>
+                <h2 class="section-title">Mengapa Memilih GandengTangan?</h2>
+                <p class="section-subtitle">Katalog inklusif yang sederhana untuk pembeli dan bermanfaat bagi pengrajin.</p>
+            </div>
+        </div>
+        <div class="why-grid">
+            <div class="card why-card"><div class="why-icon">🧡</div><h3>Dukung Dampak Sosial</h3><p>Setiap pembelian membantu membuka peluang ekonomi bagi pengrajin disabilitas.</p></div>
+            <div class="card why-card"><div class="why-icon">📦</div><h3>Produk Terpilih</h3><p>Produk ditampilkan dengan informasi harga, stok, kategori, dan pengrajin yang jelas.</p></div>
+            <div class="card why-card"><div class="why-icon">💬</div><h3>Order Mudah</h3><p>Cukup klik WhatsApp, pesan otomatis berisi detail produk untuk admin.</p></div>
+        </div>
+        <div class="cta-strip">
+            <div><strong>Siap melihat karya pengrajin?</strong><span>Temukan produk unik dan dukung karya inklusif hari ini.</span></div>
+            <a class="btn btn-primary" href="{{ route('catalog') }}">Lihat Katalog</a>
+        </div>
+    </section>
 </div>
 
 <script>

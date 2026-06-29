@@ -1,16 +1,19 @@
 @extends('layouts.app')
 
-@section('title', 'Catalog - GandengTangan')
+@section('title', 'Katalog - GandengTangan')
 
 @section('content')
 <div class="container page">
     @php
-        $waNumber = optional(\App\Models\Setting::query()->first())->whatsapp_number ?: env('WHATSAPP_NUMBER', '6280000000000');
+        $waSetting = \Illuminate\Support\Facades\Schema::hasTable('settings') ? \App\Models\Setting::query()->first() : null;
+        $waNumber = optional($waSetting)->whatsapp_number ?: config('whatsapp.admin_number', '6281361428113');
+        $waNumber = preg_replace('/\D+/', '', $waNumber);
+        if (str_starts_with($waNumber, '0')) $waNumber = '62'.substr($waNumber, 1);
     @endphp
 
     <div class="gallery-head">
         <div>
-            <h1 class="page-title">Catalog</h1>
+            <h1 class="page-title">Katalog Produk</h1>
             <p class="page-subtitle">Temukan produk pilihan dari para pengrajin disabilitas.</p>
         </div>
     </div>
@@ -59,6 +62,7 @@
                     ."Judul: {$p->title}\n"
                     ."Harga: Rp ".number_format((int)$p->price, 0, ',', '.')."\n"
                     ."Pengrajin: ".($p->artist->name ?? '-')."\n"
+                    ."Status: ".($p->is_sold ? 'Sold Out' : 'Tersedia (stok: '.(int)($p->stock ?? 1).')')."\n"
                     ."Link: ".route('product.show', $p);
 
                 $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
@@ -79,6 +83,10 @@
                         <div class="artwork-price">Rp {{ number_format((int)$p->price, 0, ',', '.') }}</div>
                     </div>
 
+                    @if($p->is_sold)
+                        <div class="artwork-status"><span class="badge badge-sold">Sold Out</span></div>
+                    @endif
+
                     <div class="artwork-meta">
                         <span class="pill">{{ $p->category->name ?? '-' }}</span>
                         <span class="muted">{{ $p->artist->name ?? '-' }}</span>
@@ -87,7 +95,7 @@
                     <div class="artwork-actions">
                         <a class="btn btn-ghost" href="{{ route('product.show', $p) }}">Detail</a>
                         <a class="btn btn-dark" href="{{ $waLink }}" target="_blank" rel="noreferrer">
-                            Beli / Pesan
+                            {{ $p->is_sold ? 'Tanya Ketersediaan' : 'Beli via WhatsApp' }}
                         </a>
                     </div>
                 </div>

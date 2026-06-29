@@ -1,31 +1,31 @@
 @extends('layouts.admin')
-@section('title', 'Kelola Seniman')
-@section('page_title', 'Kelola Seniman')
-@section('page_subtitle', 'Kelola data seniman dan jumlah karya')
+@section('title', 'Kelola Pengrajin')
+@section('page_title', 'Kelola Pengrajin')
+@section('page_subtitle', 'Kelola data pengrajin dan jumlah karya')
 
 @section('content')
     <div class="admin-page-actions">
         <div>
-            <h1 class="admin-h1">Kelola Seniman</h1>
+            <h1 class="admin-h1">Kelola Pengrajin</h1>
             <p class="admin-p">
-                Daftar seniman berdasarkan akses organisasi Anda.
+                Daftar pengrajin berdasarkan akses organisasi Anda.
             </p>
         </div>
 
         <a href="{{ route('admin.artists.create') }}" class="btn btn-primary">
-            + Tambah Seniman
+            + Tambah Pengrajin
         </a>
     </div>
 
     <div class="admin-panel">
         <div class="admin-panel-head">
-            <h2 class="admin-h2">Daftar Seniman</h2>
+            <h2 class="admin-h2">Daftar Pengrajin</h2>
             <div class="admin-muted">Total: {{ $artists->total() }}</div>
         </div>
 
         <div class="admin-table admin-table-scroll">
             <div class="admin-table-head admin-table-head-5">
-                <div>Seniman</div>
+                <div>Pengrajin</div>
                 <div>Tipe Disabilitas</div>
                 <div>Organisasi</div>
                 <div>Jumlah Karya</div>
@@ -36,15 +36,17 @@
                 <div class="admin-table-row admin-table-row-artist">
                     <div class="admin-artist">
                         <div class="admin-artist-avatar">
-                            {{ $artist->avatar ?: strtoupper(substr($artist->name, 0, 1)) }}
+                            @if($artist->photo_url)
+                                <img src="{{ $artist->photo_url }}" alt="{{ $artist->name }}">
+                            @else
+                                {{ $artist->avatar ?: strtoupper(substr($artist->name, 0, 1)) }}
+                            @endif
                         </div>
                         <div class="admin-artist-meta">
                             <div class="admin-artist-name">{{ $artist->name }}</div>
                             <div class="admin-artist-sub">
-                                ID: {{ $artist->id }}
-                                @if($artist->created_at)
-                                    • {{ $artist->created_at->format('d M Y') }}
-                                @endif
+                                {{ $artist->skill ?: 'Keahlian belum diisi' }}
+                                @if(!($artist->is_active ?? true)) • Nonaktif @endif
                             </div>
                         </div>
                     </div>
@@ -62,7 +64,9 @@
 
                         <form method="POST"
                               action="{{ route('admin.artists.destroy', $artist) }}"
-                              onsubmit="return confirm('Yakin hapus seniman ini?')">
+                              data-confirm-submit
+                              data-confirm-title="Hapus Pengrajin?"
+                              data-confirm-message="Pengrajin {{ $artist->name }} akan dihapus jika tidak memiliki produk.">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="admin-mini-btn danger">Hapus</button>
@@ -70,7 +74,7 @@
                     </div>
                 </div>
             @empty
-                <div class="admin-empty">Belum ada seniman.</div>
+                <div class="admin-empty">Belum ada pengrajin.</div>
             @endforelse
         </div>
 

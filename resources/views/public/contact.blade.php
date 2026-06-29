@@ -3,6 +3,12 @@
 @section('title', 'Kontak - GandengTangan')
 
 @section('content')
+@php
+    $setting = \Illuminate\Support\Facades\Schema::hasTable('settings') ? \App\Models\Setting::query()->first() : null;
+    $wa = preg_replace('/\D+/', '', $setting->whatsapp_number ?? config('whatsapp.admin_number', '6281361428113'));
+    if (str_starts_with($wa, '0')) $wa = '62'.substr($wa, 1);
+    $message = urlencode('Halo admin GandengTangan, saya ingin bertanya tentang katalog produk.');
+@endphp
 <div class="container page">
     <div class="gallery-head">
         <div>
@@ -11,10 +17,19 @@
         </div>
     </div>
 
-    <div class="card" style="padding: 24px;">
-        <p style="margin: 0 0 12px;">Untuk tahap MVP, seluruh proses tanya produk dan pembelian akan diarahkan ke admin.</p>
-        <p style="margin: 0 0 12px;">Silakan gunakan tombol WhatsApp pada detail produk untuk menghubungi admin secara langsung.</p>
-        <p style="margin: 0;"><a class="btn btn-primary" href="{{ route('catalog') }}">Lihat Katalog</a></p>
+    <div class="contact-grid contact-grid-4">
+        <div class="card contact-card"><div class="contact-icon">📍</div><h2>Alamat</h2><p>{{ optional($setting)->address ?: 'Indonesia' }}</p></div>
+        <div class="card contact-card"><div class="contact-icon">WA</div><h2>WhatsApp</h2><p>{{ optional($setting)->whatsapp_number ?? '6281361428113' }}</p><a class="btn btn-primary" href="https://wa.me/{{ $wa }}?text={{ $message }}" target="_blank" rel="noreferrer">Chat Admin</a></div>
+        <div class="card contact-card"><div class="contact-icon">✉️</div><h2>Email</h2><p>{{ optional($setting)->contact_email ?: 'halo@gandengtangan.id' }}</p></div>
+        <div class="card contact-card"><div class="contact-icon">⏱️</div><h2>Jam Operasional</h2><p>Senin - Sabtu<br>09.00 - 17.00 WIB</p></div>
+    </div>
+
+    <div class="card map-placeholder">
+        <div>
+            <strong>Google Maps</strong>
+            <span>Placeholder lokasi GandengTangan. Lokasi resmi dapat diatur melalui halaman Settings.</span>
+        </div>
+        <div class="map-pin">📍</div>
     </div>
 </div>
 @endsection

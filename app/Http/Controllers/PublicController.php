@@ -3,11 +3,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class PublicController extends Controller
 {
 public function index()
 {
+    if (! Schema::hasTable('products')) {
+        return view('public.index', [
+            'featured' => collect(),
+            'stats' => ['products' => 0, 'artists' => 0, 'sold' => 0],
+            'categories' => collect(),
+            'productsByCategory' => collect(),
+        ]);
+    }
+
     // 1) Featured products (utama)
     $featured = Product::with(['artist', 'category'])
         ->where('is_sold', false)
@@ -56,8 +66,15 @@ public function index()
 }
 public function gallery(Request $request)
 {
-    $query = Product::with(['artist', 'category'])
-        ->where('is_sold', false);
+    if (! Schema::hasTable('products')) {
+        return view('public.gallery', [
+            'products' => Product::query()->whereRaw('1 = 0')->paginate(12),
+            'categories' => collect(),
+            'types' => ['Teman Tuli', 'Teman Netra', 'Teman Daksa', 'Teman Autis', 'Teman Grahita'],
+        ]);
+    }
+
+    $query = Product::with(['artist', 'category']);
 
     // filter category
     if ($request->filled('category') && $request->category !== 'Semua') {
