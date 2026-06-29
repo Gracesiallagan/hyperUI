@@ -18,6 +18,10 @@ Route::view('/cara-beli', 'public.how-to-buy')->name('how_to_buy');
 Route::get('/katalog', [PublicController::class, 'gallery'])->name('catalog');
 Route::get('/katalog/{product}', [PublicController::class, 'show'])->name('product.show');
 Route::get('/media/{path}', function (string $path) {
+    if (Storage::disk('images')->exists($path)) {
+        return response()->file(Storage::disk('images')->path($path));
+    }
+
     abort_unless(Storage::disk('public')->exists($path), 404);
 
     return response()->file(Storage::disk('public')->path($path));

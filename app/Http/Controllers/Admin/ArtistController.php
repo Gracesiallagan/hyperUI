@@ -37,12 +37,12 @@ class ArtistController extends Controller
         $validated['avatar'] = strtoupper(substr($validated['name'], 0, 1));
 
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('artists', 'public');
+            $validated['photo'] = $request->file('photo')->store('artists', 'images');
         }
 
         Artist::create($validated);
 
-        return redirect()->route('admin.artists.index')->with('success', 'Seniman berhasil ditambahkan!');
+        return redirect()->route('admin.artists.index')->with('success', 'Pengrajin berhasil ditambahkan!');
     }
 
     public function edit(Artist $artist)
@@ -63,20 +63,30 @@ class ArtistController extends Controller
         $validated['avatar'] = strtoupper(substr($validated['name'], 0, 1));
 
         if ($request->hasFile('photo')) {
-            if ($artist->photo) Storage::disk('public')->delete($artist->photo);
-            $validated['photo'] = $request->file('photo')->store('artists', 'public');
+            $this->deletePhoto($artist->photo);
+            $validated['photo'] = $request->file('photo')->store('artists', 'images');
         }
 
         $artist->update($validated);
 
-        return redirect()->route('admin.artists.index')->with('success', 'Data seniman berhasil diperbarui!');
+        return redirect()->route('admin.artists.index')->with('success', 'Data pengrajin berhasil diperbarui!');
     }
 
     public function destroy(Artist $artist)
     {
-        if ($artist->photo) Storage::disk('public')->delete($artist->photo);
+        $this->deletePhoto($artist->photo);
         $artist->delete();
 
-        return redirect()->route('admin.artists.index')->with('success', 'Data seniman berhasil dihapus!');
+        return redirect()->route('admin.artists.index')->with('success', 'Data pengrajin berhasil dihapus!');
+    }
+
+    private function deletePhoto(?string $path): void
+    {
+        if (!$path || str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return;
+        }
+
+        Storage::disk('images')->delete($path);
+        Storage::disk('public')->delete($path);
     }
 }

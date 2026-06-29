@@ -28,7 +28,7 @@
                 <div>Produk</div>
                 <div>Kategori</div>
                 <div>Harga</div>
-                <div>Seniman</div>
+                <div>Pengrajin</div>
                 <div>Status</div>
                 <div>Aksi</div>
             </div>

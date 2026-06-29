@@ -45,7 +45,7 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            $validated['image'] = $request->file('image')->store('products', 'images');
         }
 
         $this->saveWhatsappNumber($validated['whatsapp_number'] ?? null);
@@ -85,8 +85,8 @@ class ProductController extends Controller
         $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {
-            if ($product->image) Storage::disk('public')->delete($product->image);
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            $this->deleteImage($product->image);
+            $validated['image'] = $request->file('image')->store('products', 'images');
         }
 
         $this->saveWhatsappNumber($validated['whatsapp_number'] ?? null);
@@ -99,7 +99,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image) Storage::disk('public')->delete($product->image);
+        $this->deleteImage($product->image);
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus!');
@@ -115,5 +115,15 @@ class ProductController extends Controller
             ['id' => 1],
             ['whatsapp_number' => $number]
         );
+    }
+
+    private function deleteImage(?string $path): void
+    {
+        if (!$path || str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return;
+        }
+
+        Storage::disk('images')->delete($path);
+        Storage::disk('public')->delete($path);
     }
 }

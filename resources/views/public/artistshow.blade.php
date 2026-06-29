@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $artist->name . ' - Our Artists')
+@section('title', $artist->name . ' - Pengrajin')
 
 @section('content')
 <div class="container page">
@@ -34,8 +34,8 @@
         @forelse($artist->products as $p)
             <a class="card artwork-card" href="{{ route('product.show', $p) }}">
                 <div class="artwork-media">
-                    @if($p->image)
-                        <img src="{{ str_starts_with($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" alt="{{ $p->title }}">
+                    @if($p->image_url)
+                        <img src="{{ $p->image_url }}" alt="{{ $p->title }}">
                     @else
                         <div class="artwork-placeholder">🖼️</div>
                     @endif

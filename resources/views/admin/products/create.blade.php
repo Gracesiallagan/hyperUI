@@ -41,9 +41,9 @@
                 </div>
 
                 <div class="field">
-                    <label class="label" for="artist_id">Seniman</label>
+                    <label class="label" for="artist_id">Pengrajin</label>
                     <select id="artist_id" name="artist_id" required class="input">
-                        <option value="" disabled {{ old('artist_id') ? '' : 'selected' }}>Pilih seniman</option>
+                        <option value="" disabled {{ old('artist_id') ? '' : 'selected' }}>Pilih pengrajin</option>
                         @foreach($artists as $artist)
                             <option value="{{ $artist->id }}" {{ (string)old('artist_id') === (string)$artist->id ? 'selected' : '' }}>
                                 {{ $artist->name }}{{ $artist->organization ? ' (' . $artist->organization->name . ')' : '' }}

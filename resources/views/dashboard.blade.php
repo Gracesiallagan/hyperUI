@@ -92,7 +92,7 @@
                         <div class="admin-prod">
                             <div class="admin-prod-thumb">
                                 @if($p->image)
-                                    <img src="{{ asset('storage/'.$p->image) }}" alt="{{ $p->title }}">
+                                    <img src="{{ $p->image_url }}" alt="{{ $p->title }}">
                                 @else
                                     🖼️
                                 @endif
@@ -130,7 +130,7 @@
         <div class="admin-panel">
             <div class="admin-panel-head">
                 <h2 class="admin-h2">Artist Terbaru</h2>
-                <a class="admin-small-link" href="{{ route('admin.artists.index') }}">Kelola Artists →</a>
+                <a class="admin-small-link" href="{{ route('admin.artists.index') }}">Kelola Pengrajin →</a>
             </div>
 
             <div class="admin-list">
@@ -148,7 +148,7 @@
                         <a class="admin-mini-btn" href="{{ route('admin.artists.edit', $a) }}">Edit</a>
                     </div>
                 @empty
-                    <div class="admin-empty">Belum ada artist.</div>
+                    <div class="admin-empty">Belum ada pengrajin.</div>
                 @endforelse
             </div>
         </div>

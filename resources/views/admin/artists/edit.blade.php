@@ -1,8 +1,8 @@
 @extends('layouts.admin')
-@section('title', 'Edit Seniman')
+@section('title', 'Edit Pengrajin')
 
 @section('content')
-<h1 class="text-2xl font-bold mb-6">Edit Seniman</h1>
+<h1 class="text-2xl font-bold mb-6">Edit Pengrajin</h1>
 
 <form method="POST" action="{{ route('admin.artists.update', $artist) }}" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm p-8 max-w-2xl">
     @csrf @method('PUT')
@@ -25,8 +25,8 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Ganti Foto</label>
-            @if($artist->photo)
-                <img src="{{ asset('storage/' . $artist->photo) }}" class="w-20 h-20 rounded-lg object-cover mb-2" alt="">
+            @if($artist->photo_url)
+                <img src="{{ $artist->photo_url }}" class="w-20 h-20 rounded-lg object-cover mb-2" alt="">
             @endif
             <input type="file" name="photo" accept="image/*" class="w-full text-sm">
         </div>

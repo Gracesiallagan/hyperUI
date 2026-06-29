@@ -51,10 +51,14 @@ class Product extends Model
             return $this->image;
         }
 
-        if (!Storage::disk('public')->exists($this->image)) {
-            return null;
+        if (Storage::disk('images')->exists($this->image)) {
+            return route('media.show', ['path' => $this->image]);
         }
 
-        return route('media.show', ['path' => $this->image]);
+        if (Storage::disk('public')->exists($this->image)) {
+            return route('media.show', ['path' => $this->image]);
+        }
+
+        return null;
     }
 }
