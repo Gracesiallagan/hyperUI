@@ -1,67 +1,115 @@
 @extends('layouts.app')
-@section('title', $product->title . ' — Gandeng Tangan')
+@section('title', $product->title . ' - GandengTangan')
 
 @section('content')
-<section class="py-12">
-    <div class="max-w-7xl mx-auto px-4">
-        <a href="{{ route('gallery') }}" class="text-teal-600 text-sm mb-6 inline-block">&larr; Kembali ke Galeri</a>
+@php
+    $waSetting = \Illuminate\Support\Facades\Schema::hasTable('settings') ? \App\Models\Setting::query()->first() : null;
+    $waNumber = optional($waSetting)->whatsapp_number ?: config('whatsapp.admin_number', '6281361428113');
+    $waNumber = preg_replace('/\D+/', '', $waNumber);
+    if (str_starts_with($waNumber, '0')) $waNumber = '62'.substr($waNumber, 1);
+    $artistName = $product->artist->name ?? '-';
+    $isLocalUrl = str_contains(config('app.url'), '127.0.0.1') || str_contains(config('app.url'), 'localhost');
+    $waMessage = $product->is_sold
+        ? "Halo Admin GandengTangan, saya ingin bertanya ketersediaan produk berikut:\n\nProduk: {$product->title}\nHarga: {$product->formatted_price}\nPengrajin: {$artistName}\nStatus: Sold Out\n\nApakah produk ini masih bisa dipesan kembali?"
+        : "Halo Admin GandengTangan, saya tertarik dengan produk berikut:\n\nProduk: {$product->title}\nHarga: {$product->formatted_price}\nPengrajin: {$artistName}\nStatus: Tersedia\nStok: ".(int)($product->stock ?? 1)."\n\nSaya ingin bertanya atau melakukan pemesanan produk ini.";
+    if (! $isLocalUrl) {
+        $waMessage .= "\n\nHalaman Produk: ".route('product.show', $product);
+    }
+@endphp
 
-        <div class="grid md:grid-cols-2 gap-12">
-            <div class="rounded-2xl overflow-hidden bg-gray-100">
-                @if($product->image)
-                    <img src="{{ str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}"
-                         alt="{{ $product->title }}" class="w-full h-auto object-cover">
+<div class="container page">
+    <a href="{{ route('catalog') }}" class="back-link">&larr; Kembali ke Katalog</a>
+
+    <section class="detail-grid">
+        <div>
+            <div class="detail-media">
+                @if($product->image_url)
+                    <img src="{{ $product->image_url }}" alt="{{ $product->title }}">
                 @else
-                    <div class="aspect-square flex items-center justify-center text-gray-300">No Image</div>
+                    <div class="detail-placeholder">IMG</div>
                 @endif
             </div>
-            <div>
-                <span class="inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-medium mb-3">{{ $product->category->name ?? '-' }}</span>
-                @if($product->is_sold)
-                    <span class="inline-block px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium mb-3 ml-2">Terjual</span>
-                @endif
-                <h1 class="text-3xl font-bold mb-2">{{ $product->title }}</h1>
-                <p class="text-gray-500 mb-4">{{ $product->medium }}</p>
-                <div class="text-2xl font-bold text-teal-600 mb-6">{{ $product->formatted_price }}</div>
-
-                @if($product->description)
-                    <p class="text-gray-600 mb-6">{{ $product->description }}</p>
-                @endif
-
-                {{-- Artist Info --}}
-                <div class="bg-gray-50 rounded-xl p-4 mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
-                            {{ $product->artist->avatar }}
-                        </div>
-                        <div>
-                            <div class="font-semibold">{{ $product->artist->name }}</div>
-                            <div class="text-xs text-gray-400">{{ $product->artist->disability_type }} · {{ $product->artist->organization->name }}</div>
-                        </div>
-                    </div>
+            <div class="detail-thumbs">
+                <div class="detail-thumb active">
+                    @if($product->image_url)
+                        <img src="{{ $product->image_url }}" alt="Thumbnail {{ $product->title }}">
+                    @else
+                        <span>IMG</span>
+                    @endif
                 </div>
-
-                @unless($product->is_sold)
-<a href="https://wa.me/{{ config('app.whatsapp_number', env('WHATSAPP_NUMBER', '6282163850914')) }}?text={{ urlencode(env('WHATSAPP_DEFAULT_TEXT', 'Halo admin GandengTangan, saya ingin pesan karya ini:') . ' ' . $product->title) }}"                       target="_blank"
-                       class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full transition"
-                       style="background: var(--color-primary)">
-                        💬 Hubungi via WhatsApp
-                    </a>
-                @endunless
             </div>
         </div>
 
-        {{-- Related Products --}}
-        @if($related->count() > 0)
-            <div class="mt-16">
-                <h2 class="text-xl font-bold mb-6">Karya Serupa</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    @foreach($related as $p)
-                        @include('components.product-card', ['product' => $p])
-                    @endforeach
+        <div class="detail-info">
+            <div class="detail-badges">
+                <span class="pill">{{ $product->category->name ?? '-' }}</span>
+                @if($product->is_sold)
+                    <span class="badge badge-sold">Sold Out</span>
+                @else
+                    <span class="badge badge-featured">Tersedia</span>
+                @endif
+            </div>
+
+            <h1 class="detail-title">{{ $product->title }}</h1>
+            <p class="detail-medium">{{ $product->medium ?: 'Produk karya pengrajin' }}</p>
+            <div class="detail-price">{{ $product->formatted_price }}</div>
+
+            <div class="detail-stock">Stok: {{ (int) ($product->stock ?? ($product->is_sold ? 0 : 1)) }}</div>
+
+            @if($product->description)
+                <p class="detail-description">{{ $product->description }}</p>
+            @endif
+
+            <div class="maker-card">
+                <div class="maker-avatar">{{ $product->artist->avatar ?? strtoupper(substr($artistName, 0, 1)) }}</div>
+                <div>
+                    <div class="maker-label">Pengrajin</div>
+                    <div class="maker-name">{{ $artistName }}</div>
+                    <div class="maker-sub">{{ $product->artist->disability_type ?? '-' }}</div>
                 </div>
             </div>
-        @endif
-    </div>
-</section>
+
+            <div class="detail-actions">
+                <form method="POST" action="{{ route('cart.store', $product) }}">
+                    @csrf
+                    <button class="btn btn-ghost detail-wa" type="submit">🛒 Simpan ke Keranjang</button>
+                </form>
+                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode($waMessage) }}"
+                   target="_blank"
+                   rel="noreferrer"
+                   class="btn btn-primary detail-wa">
+                    {{ $product->is_sold ? 'Tanya Ketersediaan' : 'Beli via WhatsApp' }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="card artisan-section">
+            <div class="maker-avatar big">{{ $product->artist->avatar ?? strtoupper(substr($artistName, 0, 1)) }}</div>
+            <div>
+                <h2>Tentang Pengrajin</h2>
+                <h3>{{ $artistName }}</h3>
+                <p>{{ $product->artist->bio ?: 'Pengrajin GandengTangan yang menghasilkan karya dengan detail dan ketekunan.' }}</p>
+                <span class="pill">{{ $product->artist->disability_type ?? 'Pengrajin' }}</span>
+            </div>
+        </div>
+    </section>
+
+    @if($related->count() > 0)
+        <section class="section">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Produk Serupa</h2>
+                    <p class="section-subtitle">Rekomendasi dari kategori yang sama.</p>
+                </div>
+            </div>
+            <div class="home-products">
+                @foreach($related as $p)
+                    @include('components.product-card', ['product' => $p])
+                @endforeach
+            </div>
+        </section>
+    @endif
+</div>
 @endsection

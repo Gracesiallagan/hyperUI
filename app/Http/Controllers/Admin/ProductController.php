@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Artist;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,30 +14,42 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        $query = Product::with(['category', 'artist']);
 
-        $query = Product::with(['category', 'artist.organization']);
-
-        if ($user->role !== 'super_admin') {
-            $query->whereHas('artist', fn($q) => $q->where('organization_id', $user->organization_id));
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('artist', fn ($artist) => $artist->where('name', 'like', "%{$search}%"));
+            });
         }
 
-        $products = $query->latest()->paginate(15);
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
 
-        return view('admin.products.index', compact('products'));
+        if ($request->status === 'available') {
+            $query->where('is_sold', false)->where('stock', '>', 0);
+        } elseif ($request->status === 'sold') {
+            $query->where(function ($q) {
+                $q->where('is_sold', true)->orWhere('stock', '<=', 0);
+            });
+        }
+
+        $products = $query->latest()->paginate(15)->withQueryString();
+        $categories = Category::orderBy('sort_order')->orderBy('name')->get();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create(Request $request)
     {
-        $user = $request->user();
-
-        $artists = $user->role === 'super_admin'
-            ? Artist::with('organization')->get()
-            : Artist::where('organization_id', $user->organization_id)->get();
+        $artists = Artist::query()->get();
 
         $categories = Category::orderBy('sort_order')->orderBy('name')->get();
+        $settings = Setting::query()->first();
 
-        return view('admin.products.create', compact('artists', 'categories'));
+        return view('admin.products.create', compact('artists', 'categories', 'settings'));
     }
 
     public function store(Request $request)
@@ -46,14 +59,21 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'medium'      => 'nullable|string|max:255',
             'price'       => 'required|integer|min:0',
+            'stock'       => 'required|integer|min:0',
             'description' => 'nullable|string',
             'artist_id'   => 'required|exists:artists,id',
-            'image'       => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'whatsapp_number' => 'nullable|string|max:30',
         ]);
+
+        $validated['is_sold'] = ((int) $validated['stock']) === 0;
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
+
+        $this->saveWhatsappNumber($validated['whatsapp_number'] ?? null);
+        unset($validated['whatsapp_number']);
 
         Product::create($validated);
 
@@ -62,15 +82,12 @@ class ProductController extends Controller
 
     public function edit(Product $product, Request $request)
     {
-        $user = $request->user();
-
-        $artists = $user->role === 'super_admin'
-            ? Artist::with('organization')->get()
-            : Artist::where('organization_id', $user->organization_id)->get();
+        $artists = Artist::query()->get();
 
         $categories = Category::orderBy('sort_order')->orderBy('name')->get();
+        $settings = Setting::query()->first();
 
-        return view('admin.products.edit', compact('product', 'artists', 'categories'));
+        return view('admin.products.edit', compact('product', 'artists', 'categories', 'settings'));
     }
 
     public function update(Request $request, Product $product)
@@ -80,20 +97,29 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'medium'      => 'nullable|string|max:255',
             'price'       => 'required|integer|min:0',
+            'stock'       => 'required|integer|min:0',
             'description' => 'nullable|string',
             'artist_id'   => 'required|exists:artists,id',
             'is_sold'     => 'boolean',
             'is_featured' => 'boolean',
-            'image'       => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $validated['is_sold'] = $request->boolean('is_sold');
+        if ($request->boolean('is_sold')) {
+            $validated['stock'] = 0;
+        }
+
+        $validated['is_sold'] = ((int) $validated['stock']) === 0;
         $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {
             if ($product->image) Storage::disk('public')->delete($product->image);
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
+
+        $this->saveWhatsappNumber($validated['whatsapp_number'] ?? null);
+        unset($validated['whatsapp_number']);
 
         $product->update($validated);
 
@@ -102,9 +128,40 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image) Storage::disk('public')->delete($product->image);
+        if ($product->image) {
+            Storage::disk('public')->delete(preg_replace('#^(storage/|public/)#', '', ltrim($product->image, '/')));
+        }
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus!');
+    }
+
+    private function saveWhatsappNumber(?string $number): void
+    {
+        $number = $this->normalizeWhatsappNumber($number);
+
+        if (!$number) {
+            return;
+        }
+
+        Setting::query()->updateOrCreate(
+            ['id' => 1],
+            ['whatsapp_number' => $number]
+        );
+    }
+
+    private function normalizeWhatsappNumber(?string $number): ?string
+    {
+        if (!$number) {
+            return null;
+        }
+
+        $number = preg_replace('/\D+/', '', $number);
+
+        if (str_starts_with($number, '0')) {
+            return '62' . substr($number, 1);
+        }
+
+        return $number;
     }
 }

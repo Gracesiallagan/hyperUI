@@ -1,71 +1,38 @@
 @extends('layouts.app')
-@section('title', 'Tentang Kami — Gandeng Tangan')
+@section('title', 'Tentang Kami - GandengTangan')
 
 @section('content')
-<section class="about-hero">
-    <div class="container about-hero-inner">
-        <h1 class="about-title">
-            Tentang <span class="about-highlight">Gandeng Tangan</span>
-        </h1>
-        <p class="about-lead">
-            Kami percaya bahwa setiap individu memiliki potensi kreatif yang luar biasa.
-            Gandeng Tangan hadir untuk menjembatani karya seni anak-anak disabilitas Indonesia
-            dengan apresiasi yang layak.
-        </p>
+<section class="about-hero about-hero-modern">
+    <div class="container about-hero-grid">
+        <div>
+            <div class="pill light-pill"><span class="dot"></span> Platform Inklusif</div>
+            <h1 class="about-title">Membuka ruang pasar untuk <span class="about-highlight">pengrajin disabilitas</span>.</h1>
+            <p class="about-lead">GandengTangan membantu karya lokal lebih mudah ditemukan, dipercaya, dan dipesan melalui alur WhatsApp yang sederhana.</p>
+        </div>
+        <div class="about-illustration">🤝<span>Karya • Dampak • Mandiri</span></div>
     </div>
 </section>
 
-<section class="container page">
+<section class="container page about-page">
+    <div class="about-split">
+        <div class="card about-block"><div class="about-feature-icon">🎯</div><h2>Visi</h2><p>Menjadi jembatan digital yang memperluas akses pasar bagi pengrajin disabilitas di Indonesia.</p></div>
+        <div class="card about-block"><div class="about-feature-icon">🚀</div><h2>Misi</h2><p>Menyediakan katalog produk yang rapi, mudah diakses, dan mendorong transaksi langsung melalui admin.</p></div>
+    </div>
+
+    <div class="section-head about-section-head">
+        <div>
+            <h2 class="section-title">Mengapa GandengTangan?</h2>
+            <p class="section-subtitle">Kami membuat proses menemukan dan membeli karya jadi lebih sederhana.</p>
+        </div>
+    </div>
+
     <div class="about-features">
-        <div class="about-feature card">
-            <div class="about-feature-icon">🎨</div>
-            <div class="about-feature-title">Kreativitas Inklusif</div>
-            <div class="about-feature-text">
-                Membuka ruang ekspresi seni tanpa memandang keterbatasan fisik maupun mental.
-            </div>
-        </div>
-
-        <div class="about-feature card">
-            <div class="about-feature-icon">💰</div>
-            <div class="about-feature-title">Pemberdayaan Ekonomi</div>
-            <div class="about-feature-text">
-                Memberikan sumber penghasilan mandiri melalui penjualan karya seni.
-            </div>
-        </div>
-
-        <div class="about-feature card">
-            <div class="about-feature-icon">🤝</div>
-            <div class="about-feature-title">Jaringan Kolaborasi</div>
-            <div class="about-feature-text">
-                Menghubungkan organisasi, sekolah khusus, dan seniman dalam satu ekosistem.
-            </div>
-        </div>
-    </div>
-
-    <div class="about-section-head">
-        <h2 class="section-title" style="margin:0;">Organisasi Mitra Kami</h2>
-        <p class="section-subtitle" style="margin:6px 0 0;">
-            Daftar organisasi yang mendukung dan membina para seniman.
-        </p>
-    </div>
-
-    <div class="org-grid">
-        @foreach($organizations as $org)
-            <div class="card org-card">
-                <div class="org-head">
-                    <div class="org-icon">{{ $org->icon }}</div>
-                    <div class="org-meta">
-                        <div class="org-name">{{ $org->name }}</div>
-                        <div class="org-desc">{{ $org->description }}</div>
-                    </div>
-                </div>
-
-                <div class="org-stats">
-                    <span class="org-stat">🎨 {{ $org->artists_count }} seniman</span>
-                    <span class="org-stat">🖼 {{ $org->products_count }} karya</span>
-                </div>
-            </div>
-        @endforeach
+        <div class="about-feature card"><div class="about-feature-icon">🛍️</div><div class="about-feature-title">Katalog Produk Inklusif</div><div class="about-feature-text">Produk ditampilkan lengkap dengan harga, stok, kategori, foto, dan pengrajin.</div></div>
+        <div class="about-feature card"><div class="about-feature-icon">💬</div><div class="about-feature-title">Order via WhatsApp</div><div class="about-feature-text">Pengunjung cukup klik tombol, pesan otomatis langsung berisi detail produk.</div></div>
+        <div class="about-feature card"><div class="about-feature-icon">🧡</div><div class="about-feature-title">Dampak Sosial</div><div class="about-feature-text">Setiap transaksi mendukung kemandirian ekonomi dan apresiasi karya.</div></div>
+        <div class="about-feature card"><div class="about-feature-icon">📱</div><div class="about-feature-title">Mudah Diakses</div><div class="about-feature-text">Tampilan dirancang responsive agar nyaman digunakan di ponsel maupun desktop.</div></div>
+        <div class="about-feature card"><div class="about-feature-icon">✅</div><div class="about-feature-title">Informasi Jelas</div><div class="about-feature-text">Status Tersedia dan Sold Out dibuat jelas untuk menghindari kebingungan.</div></div>
+        <div class="about-feature card"><div class="about-feature-icon">🌱</div><div class="about-feature-title">Siap Berkembang</div><div class="about-feature-text">Platform ini dapat terus berkembang untuk mendukung lebih banyak pengrajin dan produk lokal.</div></div>
     </div>
 </section>
 @endsection

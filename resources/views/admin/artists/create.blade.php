@@ -1,13 +1,13 @@
 @extends('layouts.admin')
-@section('title', 'Tambah Seniman')
-@section('page_title', 'Tambah Seniman')
-@section('page_subtitle', 'Tambahkan data seniman baru')
+@section('title', 'Tambah Pengrajin')
+@section('page_title', 'Tambah Pengrajin')
+@section('page_subtitle', 'Tambahkan data pengrajin baru')
 
 @section('content')
     <div class="admin-page-actions">
         <div>
-            <h1 class="admin-h1">Tambah Seniman</h1>
-            <p class="admin-p">Lengkapi data seniman. Foto bersifat opsional.</p>
+            <h1 class="admin-h1">Tambah Pengrajin</h1>
+            <p class="admin-p">Lengkapi data pengrajin. Foto bersifat opsional.</p>
         </div>
 
         <a href="{{ route('admin.artists.index') }}" class="btn btn-ghost">
@@ -19,7 +19,10 @@
         <form method="POST"
               action="{{ route('admin.artists.store') }}"
               enctype="multipart/form-data"
-              class="admin-form-card">
+              class="admin-form-card"
+              data-confirm-submit
+              data-confirm-title="Simpan Pengrajin?"
+              data-confirm-message="Profil pengrajin baru akan ditambahkan.">
             @csrf
 
             @if ($errors->any())
@@ -53,10 +56,24 @@
                     @error('disability_type') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
 
+                <div class="field">
+                    <label class="label" for="skill">Keahlian</label>
+                    <input id="skill" type="text" name="skill" value="{{ old('skill') }}" class="input" placeholder="Contoh: Lukisan, tenun, kriya">
+                    @error('skill') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="field">
+                    <label class="label">Status</label>
+                    <label class="check" style="margin-top:12px;">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
+                        <span>Aktif</span>
+                    </label>
+                </div>
+
                 <div class="field span-2">
                     <label class="label" for="bio">Bio</label>
                     <textarea id="bio" name="bio" rows="4" class="textarea"
-                              placeholder="Ceritakan singkat tentang seniman...">{{ old('bio') }}</textarea>
+                              placeholder="Ceritakan singkat tentang pengrajin...">{{ old('bio') }}</textarea>
                     @error('bio') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
 
@@ -79,11 +96,10 @@
         </form>
 
         <div class="admin-help-card">
-            <div class="help-title">Catatan</div>
+            <div class="help-title">Panduan Singkat</div>
             <ul class="help-list">
-                <li>Avatar akan dibuat otomatis dari huruf pertama nama.</li>
-                <li>Seniman otomatis terhubung ke organisasi user yang sedang login.</li>
-                <li>Anda bisa mengubah foto kapan saja melalui menu Edit.</li>
+                <li>Isi profil pengrajin dengan bahasa yang ramah dan singkat.</li>
+                <li>Gunakan foto yang jelas jika tersedia.</li>
             </ul>
         </div>
     </div>

@@ -11,7 +11,7 @@
 <div class="admin-shell">
     <aside class="admin-sidebar">
         <div class="admin-brand">
-            <span class="admin-mark">◆</span>
+            <span class="admin-mark">GT</span>
             <div>
                 <div class="admin-name">GandengTangan</div>
                 <div class="admin-sub">Admin Panel</div>
@@ -23,14 +23,16 @@
                href="{{ route('admin.dashboard') }}">Dashboard</a>
 
             <a class="admin-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
-               href="{{ route('admin.products.index') }}">Products</a>
+               href="{{ route('admin.products.index') }}">Produk</a>
 
             <a class="admin-link {{ request()->routeIs('admin.artists.*') ? 'active' : '' }}"
-               href="{{ route('admin.artists.index') }}">Artists</a>
+               href="{{ route('admin.artists.index') }}">Pengrajin</a>
 
-            {{-- Tambahkan nanti kalau sudah ada CRUD --}}
-            <a class="admin-link" href="#" aria-disabled="true">Categories</a>
-            <a class="admin-link" href="#" aria-disabled="true">Organizations</a>
+            <a class="admin-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+               href="{{ route('admin.categories.index') }}">Kategori</a>
+
+            <a class="admin-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
+               href="{{ route('admin.settings.edit') }}">Pengaturan</a>
         </nav>
 
         <div class="admin-sidefoot">
@@ -42,7 +44,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" data-confirm-submit data-confirm-title="Logout?" data-confirm-message="Anda akan keluar dari panel admin.">
                 @csrf
                 <button type="submit" class="btn btn-ghost admin-logout">Logout</button>
             </form>
@@ -52,25 +54,39 @@
     <div class="admin-main">
         <header class="admin-topbar">
             <div class="admin-top-left">
-                <div class="admin-page-title">@yield('page_title', 'Dashboard')</div>
-                <div class="admin-page-sub">@yield('page_subtitle', 'Ringkasan data terbaru')</div>
+                <div class="admin-eyebrow">Admin Panel</div>
+                <div class="admin-page-title">@yield('page_title', 'Dashboard Admin')</div>
+                <div class="admin-page-sub">@yield('page_subtitle', 'Kelola data GandengTangan dengan mudah.')</div>
             </div>
 
             <div class="admin-top-right">
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank" rel="noreferrer">
-                    Lihat Website →
+                    Lihat Website
                 </a>
             </div>
         </header>
 
         <main class="admin-content">
-            @if (session('success'))
-                <div class="alert alert-success" style="margin-bottom:12px;">{{ session('success') }}</div>
-            @endif
-
             @yield('content')
         </main>
     </div>
 </div>
+@include('components.confirm-modal')
+<script>
+document.addEventListener('change', function (event) {
+    const input = event.target;
+    if (!input.matches('input[type="file"][accept*="image"]') || !input.files || !input.files[0]) return;
+
+    let preview = input.closest('.field')?.querySelector('.js-image-preview');
+    if (!preview) {
+        preview = document.createElement('img');
+        preview.className = 'js-image-preview image-preview';
+        input.closest('.field')?.insertBefore(preview, input.closest('.filebox'));
+    }
+
+    preview.src = URL.createObjectURL(input.files[0]);
+    preview.alt = 'Preview gambar upload';
+});
+</script>
 </body>
 </html>
