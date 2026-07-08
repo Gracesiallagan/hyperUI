@@ -7,7 +7,7 @@
     <div class="artists-head">
         <div>
             <h1 class="page-title">Our Artists</h1>
-            <p class="page-subtitle">Kenali para seniman dan karya-karya terbaiknya.</p>
+            <p class="page-subtitle">Kenali para pengrajin dan karya-karya terbaiknya.</p>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         <div class="filter">
             <label class="filter-label" for="search">Search</label>
             <input id="search" class="filter-input" type="text" name="search" value="{{ request('search') }}"
-                   placeholder="Cari nama seniman / bio...">
+                   placeholder="Cari nama pengrajin / bio...">
         </div>
 
         <div class="filter">
@@ -84,7 +84,7 @@
                 </div>
             </a>
         @empty
-            <div class="empty-state">Belum ada seniman.</div>
+            <div class="empty-state">Belum ada pengrajin.</div>
         @endforelse
     </div>
 
